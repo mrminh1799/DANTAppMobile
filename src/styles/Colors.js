@@ -87,7 +87,7 @@ export const Colors = {
         'mediumTint': '#9d9fa6',
         'light': '#f4f5f8',
         'lightContrast': '#000000',
-        'lightShade': '#d7d8da',
+        'lightShade': '#dadbdc',
         'lightTint': '#f5f6f9',
         'splash': '#ED1F24',
         'redBase': '#ED1F24',

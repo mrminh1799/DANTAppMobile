@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Dashboard = ()=>{
+const Dashboard = () => {
 
-    return(
+    return (
         <Box flex={1}>
 
         </Box>

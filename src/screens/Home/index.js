@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Box, Image, Text, HStack} from "native-base";
+import {Box, HStack, Image, Text} from "native-base";
 import {FlatList, Platform, RefreshControl, ScrollView, TouchableOpacity, useWindowDimensions} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 /*Import component*/
 import {registerScreen, tabBarRef} from '@/navigators/utils';
 import ItemAfterLogin from "@/screens/Home/ItemAfterLogin/index";
 import PropTypes from "prop-types";
-import ProductCard from "@/screens/Home/Product/ProductCard";
-import {useGetAllProducts, useGetTopBuy, useGetTopTen} from "@/services/Product";
+import ProductCard from "@/screens/Product/ProductCard";
+import {useGetTopBuy, useGetTopTen} from "@/services/Product";
 import {useDispatch, useSelector} from "react-redux";
 import {Colors} from "@/styles/Colors";
 import IconCNTTB from '../../assets/icons/iconSVG/cnttb.svg'
@@ -34,11 +34,11 @@ const CoopHome = ({navigation}) => {
     const allProductsBuy = useSelector(state => state.globalReducer.top_buy)
     const categoryNav = useSelector(state => state.globalReducer.cate_nav)
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(useGetTopTen())
         dispatch(useGetTopBuy())
         dispatch(useGetCategoryNav())
-    },[])
+    }, [])
 
     //callback when reload success
     const onRefresh = React.useCallback(() => {
@@ -86,7 +86,7 @@ const CoopHome = ({navigation}) => {
                                     style={[{marginBottom: 10, marginTop: 10}, index > 0 && {marginLeft: 20}]}
                                     key={index}
                                     onPress={item.navigate}>
-                                    <Box w={70} flexDirection={'column'} alignItems={'center'}>
+                                    <Box w={(width - 40 - 80) / 4} flexDirection={'column'} alignItems={'center'}>
                                         <Box color={'white'}>
                                             <IconCNTTB width={50} height={50}/>
                                         </Box>

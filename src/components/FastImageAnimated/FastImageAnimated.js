@@ -17,7 +17,6 @@ const FastImageAnimated = ({thumb, style, dadStyle}) => {
                 <FastImage
                     style={[{
                         zIndex: 999,
-                        flexGrow: 1,
                         borderRadius: 8
                     }, style]}
                     onLoad={()=>{
@@ -31,7 +30,7 @@ const FastImageAnimated = ({thumb, style, dadStyle}) => {
             </Animated.View>
             {
                 !isLoading && (
-                    <Skeleton style={[StyleSheet.absoluteFill]} flex={1} h={'100%'} rounded={8}/>
+                    <Skeleton style={[StyleSheet.absoluteFill, style]} rounded={8}/>
                 )
             }
         </>

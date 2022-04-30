@@ -1,18 +1,12 @@
-import React, {useState} from 'react'
-import {Box, HStack, Icon, Image, Text, useTheme} from "native-base";
-import {TouchableOpacity, useWindowDimensions} from "react-native";
+import React from 'react'
+import {useTheme} from "native-base";
+import {useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import TopUpModal from '../TopUp';
-import moment from 'moment';
-import {COMMON} from "@/constants";
 import {navigate} from "@/navigators/utils";
 import {DialogBoxService} from "@/components";
 import {useAuth} from "@/contexts";
-import IconMobile from "../../../assets/icons/iconSVG/icondt.svg"
-import IconWallet from "../../../assets/icons/iconSVG/Wallet.svg"
-import IconGraph from "../../../assets/icons/iconSVG/Graph.svg"
-import IconChart from "../../../assets/icons/iconSVG/Chart.svg"
 
 // eslint-disable-next-line react/prop-types
 const Subcriber087 = ({getUserInfor, getSubscriberAccount, currentPackage}) => {

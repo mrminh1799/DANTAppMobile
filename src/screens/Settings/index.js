@@ -1,15 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 //UI + Component
-import {TouchableOpacity, NativeEventEmitter} from 'react-native';
-import {Box, Center, Collapse, Text, VStack, Icon, useTheme, HStack, Divider, Image, ScrollView} from 'native-base';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Colors } from "@/styles/Colors";
-import TopUpModal from '../Home/TopUp';
+import {Center, Text, useTheme} from 'native-base';
+import {Colors} from "@/styles/Colors";
 //Utils
 import {useTranslation} from "react-i18next";
-import {navigate, registerScreen} from '@/navigators/utils';
-import ChangeLanguage from "@/screens/ChangeLanguage";
-import { PaymentProvider } from '@/contexts/PaymentContext';
+import {registerScreen} from '@/navigators/utils';
 
 const Name = 'Settings';
 const ScreenOptions = {

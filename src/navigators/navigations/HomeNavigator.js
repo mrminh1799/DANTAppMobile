@@ -4,7 +4,8 @@ import Home from './BottomNavigator';
 import {registerScreen} from '../utils';
 import messaging from '@react-native-firebase/messaging';
 import {useAuth} from '@/contexts';
-import ProductDetail from "@/screens/Home/Product/ProductDetail";
+import ProductDetail from "@/screens/Product/ProductDetail";
+import Cart from "@/screens/Cart";
 
 
 const HomeStack = createNativeStackNavigator();
@@ -33,7 +34,7 @@ const HomeNavigator = () => {
                              }}>
             <HomeStack.Screen {...Home.screen} />
             <HomeStack.Screen {...ProductDetail.screen} />
-
+            <HomeStack.Screen {...Cart.screen} />
         </HomeStack.Navigator>
     );
 };

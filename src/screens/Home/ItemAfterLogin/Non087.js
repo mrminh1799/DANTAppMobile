@@ -1,18 +1,18 @@
 import React from 'react'
 import {Box, HStack, Image, Text, useTheme} from "native-base";
-import {TouchableOpacity, useWindowDimensions} from "react-native";
+import {useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import {useAuth} from "@/contexts";
 
 // eslint-disable-next-line react/prop-types
-const Non087 =()=>{
+const Non087 = () => {
     const {colors} = useTheme();
     const {height, width} = useWindowDimensions();
     const {t, i18n} = useTranslation(['HomePage', ['ServicePage'], 'Common'], {i18n});
     const {userInfo, setUserInfo} = useAuth();
 
-    return(
+    return (
         <Box>
             <Box bg={'redPlum'} m={4} rounded={4}>
                 <HStack my={4}>
@@ -28,7 +28,7 @@ const Non087 =()=>{
         </Box>
     )
 }
-Non087.PropTypes={
+Non087.PropTypes = {
     getUserInfor: PropTypes.object,
     getSubscriberAccount: PropTypes.object
 }

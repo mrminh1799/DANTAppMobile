@@ -6,7 +6,7 @@ import {registerScreen} from '@/navigators/utils';
 import {Keyboard, TouchableWithoutFeedback, useWindowDimensions} from 'react-native';
 import {useTranslation} from "react-i18next";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import Logo from '../../assets/icons/iconSVG/BeigeCream.svg'
+import Logo from '../../assets/icons/iconSVG/Untitled-1.svg'
 import {useDispatch} from "react-redux";
 import {useLogin} from "@/services/Login";
 import Storage from "@/utils/Storage";
@@ -28,13 +28,13 @@ const Login = () => {
     const {t, i18n} = useTranslation(['Login'], {i18n});
     const {height} = useWindowDimensions();
 
-    useEffect(()=>{
-        Storage.get('userData').then((res)=>{
-            if(res){
+    useEffect(() => {
+        Storage.get('userData').then((res) => {
+            if (res) {
                 setUserInfo(res)
             }
         })
-    },[])
+    }, [])
 
     const [inputValue, setInputValue] = useState({
         username: '',
@@ -42,7 +42,7 @@ const Login = () => {
     })
 
     const handleLoginWithPhone = () => {
-        dispatch(useLogin(inputValue, (res)=>{
+        dispatch(useLogin(inputValue, (res) => {
             Storage.save('userData', res)
             setUserInfo(res)
         }))

@@ -1,14 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Box, HStack, Image} from "native-base";
+import React from 'react';
+import {Box, HStack} from "native-base";
 import {TouchableOpacity} from "react-native";
 import {useTranslation} from "react-i18next";
-import { navigate} from "@/navigators/utils";
+import {navigate} from "@/navigators/utils";
 import {useAuth} from "@/contexts";
-import Subcriber087 from "@/screens/Home/ItemAfterLogin/Subcriber087";
 import SocialNetwork from "@/screens/Home/ItemAfterLogin/SocialNetwork";
 import Guest from "@/screens/Home/ItemAfterLogin/Guest";
 import PropTypes from "prop-types";
-import Non087 from "@/screens/Home/ItemAfterLogin/Non087";
 
 import IconBell from "../../../assets/icons/iconSVG/bell.svg"
 import IconMenu from "../../../assets/icons/iconSVG/menu.svg"
@@ -31,13 +29,13 @@ const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, ope
                 <Box>
                     <TouchableOpacity onPress={toNotification}
                                       style={{padding: 5, borderRadius: 100}}>
-                      <IconBell/>
+                        <IconBell/>
                     </TouchableOpacity>
                 </Box>
                 <Box>
                     <TouchableOpacity onPress={openDrawer}
                                       style={{padding: 5, borderRadius: 100}}>
-                       <IconMenu/>
+                        <IconMenu/>
                     </TouchableOpacity>
                 </Box>
             </HStack>

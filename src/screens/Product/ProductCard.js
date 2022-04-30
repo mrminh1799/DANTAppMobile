@@ -1,35 +1,36 @@
 import React from 'react';
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {Image, Text, View, Button, Box, HStack, Icon} from "native-base";
-import {TouchableOpacity, useWindowDimensions} from "react-native";
+import {Box, Button, HStack, Icon, Text} from "native-base";
+import {useWindowDimensions} from "react-native";
 import {navigate} from "@/navigators/utils";
 import {useGetDetailProduct} from "@/services/Product";
 import {Colors} from "@/styles/Colors";
 import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated";
 import AntDesign from "react-native-vector-icons/AntDesign";
-const ProductCard =({value})=>{
 
-    console.log(value)
+const ProductCard = ({value}) => {
+
     const {index, item} = value
 
     const {width, height} = useWindowDimensions()
 
     const getDetailProduct = useGetDetailProduct({
-        id:item?.id,
+        id: item?.id,
     })
 
 
-    const toDetailProduct =()=>{
-        getDetailProduct.refetch().then(res=>{
-            if(res){
-                navigate('ProductDetail',{
+    const toDetailProduct = () => {
+        getDetailProduct.refetch().then(res => {
+            if (res) {
+                navigate('ProductDetail', {
                     data: res
                 })
             }
         })
     }
-    return(
+
+    return (
         <Button
+            onPress={toDetailProduct}
             p={0}
             bg={'white'}
             rounded={4}
@@ -55,7 +56,7 @@ const ProductCard =({value})=>{
                     borderRadius: 4,
                     backgroundColor: !item?.image ? Colors.dark.lightShade : 'white',
                 }}
-                thumb={'https://mcdn.nhanh.vn/store/2071/ps/20220329/tp618_51958658872_oa.jpg'}/>
+                thumb={item?.image}/>
             <Box mt={1} mx={2}>
                 <Text fontWeight={'700'} maxW={150} fontSize={14} lineHeight={16.41}
                       numberOfLines={2}>
