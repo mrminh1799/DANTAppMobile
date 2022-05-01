@@ -17,7 +17,7 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
 
     const currentImage = product?.listDetailProduct.filter(item => (item?.color?.id === selectColor) && (item?.size?.id === selectSize))
 
-    const sumQuantity = product?.listDetailProduct?.reduce((prev, next) => {
+    const sumQuantity = product?.listDetailProduct?.length <= 1 ? product?.listDetailProduct?.[0].quantity : product?.listDetailProduct?.reduce((prev, next) => {
         if (_.isObject(prev)) {
             return prev?.quantity + next.quantity
         } else {

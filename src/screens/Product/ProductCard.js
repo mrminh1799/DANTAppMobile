@@ -21,6 +21,7 @@ const ProductCard = ({value}) => {
     const toDetailProduct = () => {
         getDetailProduct.refetch().then(res => {
             if (res) {
+                console.log(res)
                 navigate('ProductDetail', {
                     data: res
                 })

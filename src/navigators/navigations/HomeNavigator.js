@@ -6,6 +6,7 @@ import messaging from '@react-native-firebase/messaging';
 import {useAuth} from '@/contexts';
 import ProductDetail from "@/screens/Product/ProductDetail";
 import Cart from "@/screens/Cart";
+import User from "@/screens/User";
 
 
 const HomeStack = createNativeStackNavigator();
@@ -35,6 +36,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...Home.screen} />
             <HomeStack.Screen {...ProductDetail.screen} />
             <HomeStack.Screen {...Cart.screen} />
+            <HomeStack.Screen {...User.screen} />
         </HomeStack.Navigator>
     );
 };

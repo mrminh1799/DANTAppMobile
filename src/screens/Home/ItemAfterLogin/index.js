@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 
 import IconBell from "../../../assets/icons/iconSVG/bell.svg"
 import IconMenu from "../../../assets/icons/iconSVG/menu.svg"
+import {Colors} from "@/styles/Colors";
 
 const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, openDrawer}) => {
     const {userInfo} = useAuth();
@@ -24,7 +25,7 @@ const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, ope
     }
 
     return (
-        <Box>
+        <Box bg={Colors.light.redBase}>
             <HStack justifyContent={'space-between'} mx={17}>
                 <Box>
                     <TouchableOpacity onPress={toNotification}

@@ -3,21 +3,25 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 /*Import component*/
-import {navigate, registerScreen} from '../utils';
+import {registerScreen} from '../utils';
 import {TabBar, TabBarIcon} from '../components';
 
 
 /*Import routes*/
 import CoopHome from '@/screens/Home';
 import Settings from '@/screens/Settings';
-
+import Cart from '@/screens/Cart';
+import User from '@/screens/User';
+import {tabBarRef} from "@/navigators/utils";
+import {useAuth} from "@/contexts";
+import {useTranslation} from "react-i18next";
+import {Icon} from "native-base";
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 
 /*Create & init*/
 const Tab = createBottomTabNavigator();
-import {tabBarRef} from "@/navigators/utils";
-import {useAuth} from "@/contexts";
-import {useTranslation} from "react-i18next";
 
 /*icons*/
 
@@ -42,8 +46,6 @@ const Home = () => {
     return (
         <Tab.Navigator
             screenOptions={{
-                lazy: true,
-                headerTitle: '',
                 headerShown: false,
                 style: {paddingTop: 8},
             }}
@@ -59,27 +61,24 @@ const Home = () => {
                     ),
                 })}
             />
-            {/*<Tab.Screen*/}
-            {/*    {...CustomerCenter.screen}*/}
-            {/*    options={{*/}
-            {/*        tabBarLabel: `${t('support', {ns: "HomePage"})}`,*/}
-            {/*        tabBarIcon: (props) => (*/}
-            {/*            <TabBarIcon {...props} source={require('@/assets/icons/Tabs/support.png')}/>*/}
-            {/*        ),*/}
-            {/*    }}*/}
-            {/*/>*/}
-            {/*<Tab.Screen*/}
-            {/*    {...ItelClub.screen}*/}
-            {/*    options={{*/}
-            {/*        // isMenu: true,*/}
-            {/*        // onPress: () => DialogBoxService.alert(`${t('functiondevelopment', {ns: 'Settings'})}`),*/}
-            {/*        hideText: true,*/}
-            {/*        tabBarLabel: '',*/}
-            {/*        tabBarIcon: (props) => (*/}
-            {/*            <TabBarIcon {...props} color={'#ED1F24'} source={require('@/assets/images/Group.png')}/>*/}
-            {/*        ),*/}
-            {/*    }}*/}
-            {/*/>*/}
+            <Tab.Screen
+                {...Cart.screen}
+                options={{
+                    tabBarLabel: `Giỏ hàng`,
+                    tabBarIcon: (props) => (
+                        <Icon as={<AntDesign name="shoppingcart"/>} color={props.color} size={5} mt={'18px'}/>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                {...User.screen}
+                options={{
+                    tabBarLabel: `Cá nhân`,
+                    tabBarIcon: (props) => (
+                        <Icon as={<Feather name={'user'}/>} color={props.color} size={5} mt={'18px'}/>
+                    ),
+                }}
+            />
             {/*<Tab.Screen*/}
             {/*    {...Settings.screen}*/}
             {/*    options={{*/}

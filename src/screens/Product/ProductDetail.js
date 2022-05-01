@@ -27,6 +27,7 @@ const ProductDetail = ({route}) => {
     const product = params?.data?.data
 
     function getUnique(array, key) {
+        if(array.length <= 0) return array
         array = array.map(item => {
             return {
                 ...item.size,
