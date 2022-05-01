@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Icon, Image, Text, useTheme} from 'native-base';
 import Feather from 'react-native-vector-icons/Feather';
-import {Button, Input} from '@/components';
+import {Button, DialogBoxService, Input} from '@/components';
 import {registerScreen} from '@/navigators/utils';
 import {Keyboard, TouchableWithoutFeedback, useWindowDimensions} from 'react-native';
 import {useTranslation} from "react-i18next";
@@ -45,6 +45,10 @@ const Login = () => {
         dispatch(useLogin(inputValue, (res) => {
             Storage.save('userData', res)
             setUserInfo(res)
+        },(err)=>{
+            if(err.statusCode === '401'){
+                DialogBoxService.alert('Tài khoản hoặc mật khẩu không chính xác')
+            }
         }))
     };
 

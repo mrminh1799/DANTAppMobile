@@ -36,7 +36,9 @@ const User = () => {
 
     const dispatch = useDispatch()
 
-    console.log(userInfo)
+    const changePassword = () => {
+      navigate('ChangePassword')
+    }
 
     const logout = () => {
         Storage.delete('userData')
@@ -110,7 +112,7 @@ const User = () => {
                               color={Colors.light.darkTint}/>
                     </Box>
                 </Pressable>
-                <Pressable py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'} borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
+                <Pressable onPress={changePassword} py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'} borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
                     <Box flexDir={'row'} alignItems={'center'}>
                         <Icon as={<Feather name={'lock'}/>} size={5}/>
                         <Text fontSize={15} ml={'13px'}>Đổi mật khẩu</Text>

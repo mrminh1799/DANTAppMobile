@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, HStack} from "native-base";
+import {Box, HStack, Icon} from "native-base";
 import {TouchableOpacity} from "react-native";
 import {useTranslation} from "react-i18next";
 import {navigate} from "@/navigators/utils";
@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import IconBell from "../../../assets/icons/iconSVG/bell.svg"
 import IconMenu from "../../../assets/icons/iconSVG/menu.svg"
 import {Colors} from "@/styles/Colors";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, openDrawer}) => {
     const {userInfo} = useAuth();
@@ -28,15 +29,15 @@ const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, ope
         <Box bg={Colors.light.redBase}>
             <HStack justifyContent={'space-between'} mx={17}>
                 <Box>
-                    <TouchableOpacity onPress={toNotification}
-                                      style={{padding: 5, borderRadius: 100}}>
-                        <IconBell/>
-                    </TouchableOpacity>
-                </Box>
-                <Box>
                     <TouchableOpacity onPress={openDrawer}
                                       style={{padding: 5, borderRadius: 100}}>
                         <IconMenu/>
+                    </TouchableOpacity>
+                </Box>
+                <Box>
+                    <TouchableOpacity onPress={toNotification}
+                                      style={{padding: 5, borderRadius: 100}}>
+                        <Icon as={<AntDesign name="shoppingcart"/>} size={'24px'} color={'white'}/>
                     </TouchableOpacity>
                 </Box>
             </HStack>

@@ -7,6 +7,7 @@ import {useAuth} from '@/contexts';
 import ProductDetail from "@/screens/Product/ProductDetail";
 import Cart from "@/screens/Cart";
 import User from "@/screens/User";
+import ChangePassword from "@/screens/User/ChangePassword";
 
 
 const HomeStack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...ProductDetail.screen} />
             <HomeStack.Screen {...Cart.screen} />
             <HomeStack.Screen {...User.screen} />
+            <HomeStack.Screen {...ChangePassword.screen} />
         </HomeStack.Navigator>
     );
 };
