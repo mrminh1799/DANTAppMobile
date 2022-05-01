@@ -22,7 +22,7 @@ const ItemAfterLogin = ({currentPackage, getUserInfor, getSubscriberAccount, ope
         navigate('NewsItel')
     }
     const toNotification = () => {
-        navigate('Notification')
+        navigate('Cart')
     }
 
     return (

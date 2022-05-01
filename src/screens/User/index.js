@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react'
 import {goBack, navigate, registerScreen} from "@/navigators/utils";
 import {Box, Icon, Input, Pressable, ScrollView, Text} from "native-base";
-import {Header} from "@/components";
+import {DialogBoxService, Header} from "@/components";
 import Entypo from "react-native-vector-icons/Entypo";
 import {Colors} from "@/styles/Colors";
 import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated";
-import {Image, StyleSheet, TouchableOpacity, useWindowDimensions} from "react-native";
+import {Image, Linking, Platform, StyleSheet, TouchableOpacity, useWindowDimensions} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import {SwipeListView} from "react-native-swipe-list-view";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -37,7 +37,25 @@ const User = () => {
     const dispatch = useDispatch()
 
     const changePassword = () => {
-      navigate('ChangePassword')
+      navigate('ConfirmPass')
+    }
+
+    const handleCall = () => {
+        let phoneNumber = null;
+        if (Platform.OS !== 'android') {
+            phoneNumber = `telprompt:${'0877087087'}`;
+        } else {
+            phoneNumber = `tel:${'0877087087'}`;
+        }
+        Linking.canOpenURL(phoneNumber)
+            .then(supported => {
+                if (!supported) {
+                    DialogBoxService.alert('Số điện thoại không khả dụng vui lòng thử lại')
+                } else {
+                    return Linking.openURL(phoneNumber);
+                }
+            })
+            .catch(err => console.log(err));
     }
 
     const logout = () => {
@@ -122,7 +140,7 @@ const User = () => {
                               color={Colors.light.darkTint}/>
                     </Box>
                 </Pressable>
-                <Pressable py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'} borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
+                <Pressable onPress={handleCall} py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'} borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
                     <Box flexDir={'row'} alignItems={'center'}>
                         <Icon as={<Feather name={'phone-call'}/>} size={5}/>
                         <Text fontSize={15} ml={'13px'}>Liên hệ cửa hàng</Text>

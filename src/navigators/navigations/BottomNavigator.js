@@ -61,15 +61,15 @@ const Home = () => {
                     ),
                 })}
             />
-            <Tab.Screen
-                {...Cart.screen}
-                options={{
-                    tabBarLabel: `Giỏ hàng`,
-                    tabBarIcon: (props) => (
-                        <Icon as={<AntDesign name="shoppingcart"/>} color={props.color} size={5} mt={'18px'}/>
-                    ),
-                }}
-            />
+            {/*<Tab.Screen*/}
+            {/*    {...Cart.screen}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: `Giỏ hàng`,*/}
+            {/*        tabBarIcon: (props) => (*/}
+            {/*            <Icon as={<AntDesign name="shoppingcart"/>} color={props.color} size={5} mt={'18px'}/>*/}
+            {/*        ),*/}
+            {/*    }}*/}
+            {/*/>*/}
             <Tab.Screen
                 {...User.screen}
                 options={{
