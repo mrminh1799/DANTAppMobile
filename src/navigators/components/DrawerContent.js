@@ -42,9 +42,9 @@ const DrawerContent = ({navigation}) => {
 
 
     const logOutApp = async () => {
-        await Storage.delete(COMMON.ACCESS_TOKEN_GG)
         navigation.closeDrawer();
         await Keychain.resetGenericPassword()
+        Storage.delete('userData')
         setUserInfo(null)
     }
 
@@ -81,22 +81,22 @@ const DrawerContent = ({navigation}) => {
                     </VStack>}
                 </VStack>
 
-                <Divider my={2}/>
-                <VStack py={'10px'}>
-                    <TouchableOpacity onPress={() => setLanguage(!openLanguage)}>
-                        <HStack my={2} alignItems={'center'}>
-                            <Center w={'25px'} h={'25px'}>
-                                <IconQLTK/>
-                            </Center>
-                            <Text color={'white'} ml={'20px'} fontSize={14}>{t('ChangeLanguage')}</Text>
-                            <Icon as={openLanguage ? <AntDesign name="up"/> : <AntDesign name="down"/>} size={'4'}
-                                  color={'white'}
-                                  position={'absolute'} right={"0"}/>
-                        </HStack>
-                    </TouchableOpacity>
-                    {openLanguage && <Box py={'5px'}>
-                        <ChangeLanguage/>
-                    </Box>}
+                {/*<Divider my={2}/>*/}
+                {/*<VStack py={'10px'}>*/}
+                    {/*<TouchableOpacity onPress={() => setLanguage(!openLanguage)}>*/}
+                    {/*    <HStack my={2} alignItems={'center'}>*/}
+                    {/*        <Center w={'25px'} h={'25px'}>*/}
+                    {/*            <IconQLTK/>*/}
+                    {/*        </Center>*/}
+                    {/*        <Text color={'white'} ml={'20px'} fontSize={14}>{t('ChangeLanguage')}</Text>*/}
+                    {/*        <Icon as={openLanguage ? <AntDesign name="up"/> : <AntDesign name="down"/>} size={'4'}*/}
+                    {/*              color={'white'}*/}
+                    {/*              position={'absolute'} right={"0"}/>*/}
+                    {/*    </HStack>*/}
+                    {/*</TouchableOpacity>*/}
+                    {/*{openLanguage && <Box py={'5px'}>*/}
+                    {/*    <ChangeLanguage/>*/}
+                    {/*</Box>}*/}
                     <TouchableOpacity onPress={logOutApp}>
                         <HStack my={2} alignItems={'center'}>
                             <Center w={'25px'} h={'25px'}>
@@ -107,9 +107,9 @@ const DrawerContent = ({navigation}) => {
                     </TouchableOpacity>
                     <Text color={'white'} mt={'25px'}
                           fontSize={14}>{t('Version') + ":  " + DeviceInfo.getVersion()}</Text>
-                    <IconBCT/>
+                    {/*<IconBCT/>*/}
                     <Box h={'20px'}/>
-                </VStack>
+                {/*</VStack>*/}
             </ScrollView>
         </Center>
     )

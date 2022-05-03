@@ -74,19 +74,19 @@ const Login = () => {
                     flexWrap={'wrap'}
                     paddingTop={height > 750 ? 200 : '80px'}
                 >
-                    <Box
-                        position={'absolute'}
-                        right={0}
-                        top={30}
-                        cursor={'pointer'}
-                        width={'auto'}
-                        height={'auto'}
-                        padding={5}>
-                        <TouchableWithoutFeedback onPress={byPassLogin}>
-                            <Image alt={'close'} style={{height: 20, width: 20}}
-                                   source={require('../../assets/images/icon-close.png')}/>
-                        </TouchableWithoutFeedback>
-                    </Box>
+                    {/*<Box*/}
+                    {/*    position={'absolute'}*/}
+                    {/*    right={0}*/}
+                    {/*    top={30}*/}
+                    {/*    cursor={'pointer'}*/}
+                    {/*    width={'auto'}*/}
+                    {/*    height={'auto'}*/}
+                    {/*    padding={5}>*/}
+                    {/*    <TouchableWithoutFeedback onPress={byPassLogin}>*/}
+                    {/*        <Image alt={'close'} style={{height: 20, width: 20}}*/}
+                    {/*               source={require('../../assets/images/icon-close.png')}/>*/}
+                    {/*    </TouchableWithoutFeedback>*/}
+                    {/*</Box>*/}
                     <Box mb={'15px'}>
                         <Logo width={340} height={80}/>
                     </Box>

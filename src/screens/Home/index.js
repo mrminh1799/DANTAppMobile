@@ -57,8 +57,10 @@ const CoopHome = ({navigation}) => {
 
 
     const openDrawer = () => {
-        tabBarRef.current.hideTabBar();
-        navigation.openDrawer();
+        // tabBarRef.current.hideTabBar();
+        // navigation.closeDrawer();
+        // navigation.openDrawer();
+        navigation.toggleDrawer();
     }
 
     const renderOptions = useMemo(() => {

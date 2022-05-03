@@ -7,6 +7,7 @@ import {useAuth} from '@/contexts';
 import ProductDetail from "@/screens/Product/ProductDetail";
 import Cart from "@/screens/Cart";
 import User from "@/screens/User";
+import Order from "@/screens/Order";
 import ConfirmPass from "@/screens/User/ConfirmPass";
 import ChangePass from "@/screens/User/ChangePass";
 
@@ -41,6 +42,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...User.screen} />
             <HomeStack.Screen {...ConfirmPass.screen} />
             <HomeStack.Screen {...ChangePass.screen} />
+            <HomeStack.Screen {...Order.screen} />
         </HomeStack.Navigator>
     );
 };
