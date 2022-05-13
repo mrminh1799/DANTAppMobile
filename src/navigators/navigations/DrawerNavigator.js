@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {
-    createDrawerNavigator,
-} from '@react-navigation/drawer';
+import {createDrawerNavigator,} from '@react-navigation/drawer';
 
 //Routes
 import MainScreen from './Main';
 import DrawerContent from "../components/DrawerContent";
+
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {

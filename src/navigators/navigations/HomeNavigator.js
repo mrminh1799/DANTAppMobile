@@ -8,6 +8,7 @@ import ProductDetail from "@/screens/Product/ProductDetail";
 import Cart from "@/screens/Cart";
 import User from "@/screens/User";
 import Order from "@/screens/Order";
+import Category from "@/screens/Category";
 import ConfirmPass from "@/screens/User/ConfirmPass";
 import ChangePass from "@/screens/User/ChangePass";
 
@@ -43,6 +44,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...ConfirmPass.screen} />
             <HomeStack.Screen {...ChangePass.screen} />
             <HomeStack.Screen {...Order.screen} />
+            <HomeStack.Screen {...Category.screen} />
         </HomeStack.Navigator>
     );
 };

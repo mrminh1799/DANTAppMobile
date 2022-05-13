@@ -6,8 +6,15 @@ import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated"
 import Storage from "@/utils/Storage";
 import {COMMON} from "@/constants";
 import _ from "lodash";
+import {addCart, addToCart} from "@/services/Cart";
+import {useDispatch} from "react-redux";
+import {useAuth} from "@/contexts";
 
 const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
+
+    const {userInfo} = useAuth()
+
+    const dispatch = useDispatch()
     const {height, width} = useWindowDimensions();
     const [selectColor, setSelectColor] = useState(null)
     const [selectSize, setSelectSize] = useState(null)
@@ -114,40 +121,47 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
         }
     }
 
-    const addToCart = async () => {
+    const addToCart = () => {
+        // let currentData = product.listDetailProduct.find(item => (item.color.id === selectColor) && (item.size.id === selectSize))
+        // await Storage.get(COMMON.CART_LIST).then(data => {
+        //     if (data.find(item => item.id === product.id)) {
+        //         let exist = data.map(item => {
+        //             if (item.id === product.id) {
+        //                 let check = true
+        //                 item.listCart = item?.listCart.map(value => {
+        //                     if (value.id === currentData.id) {
+        //                         value.cartQuantity = quantity
+        //                         check = false
+        //                     }
+        //                     return value
+        //                 })
+        //                 check && item.listCart.unshift({
+        //                     ...currentData,
+        //                     cartQuantity: quantity
+        //                 })
+        //             }
+        //             return item
+        //         })
+        //         Storage.save(COMMON.CART_LIST, exist)
+        //     } else {
+        //         Storage.save(COMMON.CART_LIST, [{
+        //             ...product,
+        //             listCart: [
+        //                 {
+        //                     ...currentData,
+        //                     cartQuantity: quantity
+        //                 }
+        //             ]
+        //         }])
+        //     }
+        // })
         let currentData = product.listDetailProduct.find(item => (item.color.id === selectColor) && (item.size.id === selectSize))
-        await Storage.get(COMMON.CART_LIST).then(data => {
-            if (data.find(item => item.id === product.id)) {
-                let exist = data.map(item => {
-                    if (item.id === product.id) {
-                        let check = true
-                        item.listCart = item?.listCart.map(value => {
-                            if (value.id === currentData.id) {
-                                value.cartQuantity = quantity
-                                check = false
-                            }
-                            return value
-                        })
-                        check && item.listCart.unshift({
-                            ...currentData,
-                            cartQuantity: quantity
-                        })
-                    }
-                    return item
-                })
-                Storage.save(COMMON.CART_LIST, exist)
-            } else {
-                Storage.save(COMMON.CART_LIST, [{
-                    ...product,
-                    listCart: [
-                        {
-                            ...currentData,
-                            cartQuantity: quantity
-                        }
-                    ]
-                }])
-            }
-        })
+
+        dispatch(addCart({
+            idAccount: userInfo.id,
+            idProductDetail: currentData.id,
+            quantity: quantity
+        }))
     }
 
     return <Actionsheet isOpen={openChoose} onClose={() => setOpenChoose(false)}>

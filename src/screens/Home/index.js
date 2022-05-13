@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 /*Import component*/
-import {registerScreen, tabBarRef} from '@/navigators/utils';
+import {navigate, registerScreen, tabBarRef} from '@/navigators/utils';
 import ItemAfterLogin from "@/screens/Home/ItemAfterLogin/index";
 import PropTypes from "prop-types";
 import ProductCard from "@/screens/Product/ProductCard";
@@ -57,10 +57,14 @@ const CoopHome = ({navigation}) => {
 
 
     const openDrawer = () => {
-        // tabBarRef.current.hideTabBar();
-        // navigation.closeDrawer();
-        // navigation.openDrawer();
         navigation.toggleDrawer();
+    }
+
+    const openCate = (item) => {
+        navigate('Category', {
+            lstChild: item?.listChild,
+            idParent: item?.idCategory
+        })
     }
 
     const renderOptions = useMemo(() => {
@@ -95,7 +99,7 @@ const CoopHome = ({navigation}) => {
                                 <TouchableOpacity
                                     style={[{marginBottom: 10, marginTop: 10}, index > 0 && {marginLeft: 20}]}
                                     key={index}
-                                    onPress={item.navigate}>
+                                    onPress={()=>openCate(item)}>
                                     <Box w={(width - 40 - 80) / 4} flexDirection={'column'} alignItems={'center'}>
                                         <Box color={'white'}>
                                             <IconCNTTB width={50} height={50}/>

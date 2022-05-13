@@ -1,8 +1,5 @@
-import {useRef, useEffect} from "react";
-import {
-    Dimensions, Platform, StatusBar, Animated,
-    Easing,
-} from 'react-native';
+import {useEffect, useRef, useState} from "react";
+import {Animated, Dimensions, Easing, LayoutAnimation, Platform, StatusBar,} from 'react-native';
 
 import moment from 'moment'
 import Marker from 'react-native-image-marker'
@@ -101,18 +98,19 @@ export const validateEmail = (email) => {
 
 export function useAnimatedBottom(show) {
     const animatedValue = useRef(new Animated.Value(0)).current
+
     useEffect(() => {
         if (show) {
             Animated.timing(animatedValue, {
                 toValue: 0,
-                duration: Platform.OS === 'android' ? 100 : 250,
+                duration: 300,
                 easing: Easing.linear,
                 useNativeDriver: true,
             }).start()
         } else {
             Animated.timing(animatedValue, {
                 toValue: 100,
-                duration: Platform.OS === 'android' ? 100 : 250,
+                duration: 300,
                 easing: Easing.linear,
                 useNativeDriver: true,
             }).start()
@@ -153,3 +151,35 @@ export function threeDotString(width, string) {
     }
 }
 
+export default function useDebounce(value, delay) {
+    // State and setters for debounced value
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(
+        () => {
+            // Update debounced value after delay
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            // Cancel the timeout if value changes (also on delay change or unmount)
+            // This is how we prevent debounced value from updating if value is changed ...
+            // .. within the delay period. Timeout gets cleared and restarted.
+            return () => {
+                clearTimeout(handler);
+            };
+        },
+        [value, delay] // Only re-call effect if value or delay changes
+    );
+
+    return debouncedValue;
+}
+
+export const loadAnimated = (duration = 200) => {
+    LayoutAnimation.configureNext(
+        LayoutAnimation.create(
+            duration,
+            LayoutAnimation.Types.easeInEaseOut,
+            LayoutAnimation.Properties.opacity
+        ));
+}

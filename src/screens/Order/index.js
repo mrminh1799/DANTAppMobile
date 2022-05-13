@@ -18,6 +18,8 @@ const Name = "Order"
 const ScreenOptions = {
     headerShown: false,
 };
+
+const DEFAULT_IMAGE = 'https://mcdn.nhanh.vn/store/2071/ps/20220329/tp618_51958658872_oa.jpg'
 const Order = ({route}) => {
 
     const {params} = route
@@ -60,6 +62,7 @@ const Order = ({route}) => {
                 })
                 setOrder(temp)
             }))
+            params.setRefreshing(true)
         }
     }, [userInfo])
 
@@ -74,7 +77,7 @@ const Order = ({route}) => {
                         height: 80 / 300 * 400,
                         borderRadius: 0,
                     }}
-                    thumb={'https://mcdn.nhanh.vn/store/2071/ps/20220329/tp618_51958658872_oa.jpg'}/>
+                    thumb={item?.image ? item?.image : DEFAULT_IMAGE }/>
             </Box>
             <Box pl={'10px'} flex={1}>
                 <Text fontWeight={700} fontSize={15}>{item?.nameProduct.trim()}</Text>
@@ -138,6 +141,26 @@ const Order = ({route}) => {
             <Header title={'Đơn mua'} isBack/>
             <ScrollableTabView
                 ref={scrollRef => ref.current = scrollRef}
+                onBeforeEndReached={()=>{
+                    let temp = {
+                        0: [],
+                        1: [],
+                        2: [],
+                        3: [],
+                        4: [],
+                        5: [],
+                        6: [],
+                    }
+                    dispatch(getOrder({
+                        id: userInfo.id
+                    }, (res) => {
+                        res.map(item => {
+                            temp?.[item?.status]?.push(item)
+                        })
+                        setOrder(temp)
+                    }))
+                    params.setRefreshing(true)
+                }}
                 tabsStyle={{
                     height: 40,
                     backgroundColor: 'white',

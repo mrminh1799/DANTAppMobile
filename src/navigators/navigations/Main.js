@@ -12,10 +12,16 @@ import {useTranslation} from "react-i18next";
 import {DialogBoxService} from "@/components";
 import TextInput from "@/components/Input";
 import {Text} from "native-base";
-import {Text as TextNative} from "react-native";
+import {Platform, Text as TextNative, UIManager} from "react-native";
 import {COMMON} from "@/constants";
 import Keychain from "react-native-keychain";
 
+if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 const MainStack = createNativeStackNavigator();
 const Main = () => {
     const {splash, setSplash, userInfo, setUserInfo} = useAuth();
