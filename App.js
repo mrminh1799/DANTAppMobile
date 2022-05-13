@@ -10,7 +10,6 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import {useNetInfo} from '@react-native-community/netinfo'
 // import CodePush from "react-native-code-push";
 import messaging from '@react-native-firebase/messaging';
-import {SendNotiVNPay} from '@/stores/Notification/NotificationAction';
 import {Settings} from 'react-native-fbsdk-next';
 /* Import Components */
 import '@/modules/localization';
@@ -151,18 +150,6 @@ const App = () => {
         });
 
     }, []);
-
-    useEffect(() => {
-        messaging().onMessage(async remoteMessage => {
-            store.dispatch(SendNotiVNPay(remoteMessage))
-        });
-    }, []);
-
-    useEffect(() => {
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
-            store.dispatch(SendNotiVNPay(remoteMessage))
-        });
-    }, [])
 
     return (
         <NativeBaseProvider config={config} theme={theme.value}>

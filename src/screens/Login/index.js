@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Icon, Image, Text, useTheme} from 'native-base';
 import Feather from 'react-native-vector-icons/Feather';
-import {Button, Input} from '@/components';
+import {Button, DialogBoxService, Input} from '@/components';
 import {registerScreen} from '@/navigators/utils';
 import {Keyboard, TouchableWithoutFeedback, useWindowDimensions} from 'react-native';
 import {useTranslation} from "react-i18next";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import Logo from '../../assets/icons/iconSVG/BeigeCream.svg'
+import Logo from '../../assets/icons/iconSVG/Untitled-1.svg'
 import {useDispatch} from "react-redux";
 import {useLogin} from "@/services/Login";
 import Storage from "@/utils/Storage";
@@ -28,13 +28,13 @@ const Login = () => {
     const {t, i18n} = useTranslation(['Login'], {i18n});
     const {height} = useWindowDimensions();
 
-    useEffect(()=>{
-        Storage.get('userData').then((res)=>{
-            if(res){
+    useEffect(() => {
+        Storage.get('userData').then((res) => {
+            if (res) {
                 setUserInfo(res)
             }
         })
-    },[])
+    }, [])
 
     const [inputValue, setInputValue] = useState({
         username: '',
@@ -42,9 +42,13 @@ const Login = () => {
     })
 
     const handleLoginWithPhone = () => {
-        dispatch(useLogin(inputValue, (res)=>{
+        dispatch(useLogin(inputValue, (res) => {
             Storage.save('userData', res)
             setUserInfo(res)
+        },(err)=>{
+            if(err.statusCode === '401'){
+                DialogBoxService.alert('Tài khoản hoặc mật khẩu không chính xác')
+            }
         }))
     };
 
@@ -70,19 +74,19 @@ const Login = () => {
                     flexWrap={'wrap'}
                     paddingTop={height > 750 ? 200 : '80px'}
                 >
-                    <Box
-                        position={'absolute'}
-                        right={0}
-                        top={30}
-                        cursor={'pointer'}
-                        width={'auto'}
-                        height={'auto'}
-                        padding={5}>
-                        <TouchableWithoutFeedback onPress={byPassLogin}>
-                            <Image alt={'close'} style={{height: 20, width: 20}}
-                                   source={require('../../assets/images/icon-close.png')}/>
-                        </TouchableWithoutFeedback>
-                    </Box>
+                    {/*<Box*/}
+                    {/*    position={'absolute'}*/}
+                    {/*    right={0}*/}
+                    {/*    top={30}*/}
+                    {/*    cursor={'pointer'}*/}
+                    {/*    width={'auto'}*/}
+                    {/*    height={'auto'}*/}
+                    {/*    padding={5}>*/}
+                    {/*    <TouchableWithoutFeedback onPress={byPassLogin}>*/}
+                    {/*        <Image alt={'close'} style={{height: 20, width: 20}}*/}
+                    {/*               source={require('../../assets/images/icon-close.png')}/>*/}
+                    {/*    </TouchableWithoutFeedback>*/}
+                    {/*</Box>*/}
                     <Box mb={'15px'}>
                         <Logo width={340} height={80}/>
                     </Box>

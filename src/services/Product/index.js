@@ -1,6 +1,7 @@
 import {useQuery, useQueryClient, useMutation} from 'react-query';
 import {_custom, _delete, _get, _post, _put} from '@/modules/api';
 import {createGet} from "@/services/utils";
+import {DialogBoxService} from "@/components";
 
 //lay tat ca sp
 export const useGetAllProducts = (params) => {
@@ -29,9 +30,23 @@ export const useGetDetailProduct = (params) => {
         status,
         data,
         error,
-        refetch
+        refetch,
+        isLoading,
+        isSuccess,
+        isError
     } = useQuery(['get_detail_product', params], () => _get('product/findById/' + params?.id),{enabled:false});
+    isLoading && DialogBoxService.showLoading()
+    isSuccess && DialogBoxService.hideLoading()
+    isError && DialogBoxService.hideLoading()
     return {
         status, error, data, refetch
     }
+}
+
+export const useGetProductParent = (params, _callback) => async dispatch => {
+    await createGet(dispatch, 'product_by_cateParent', 'product/findByCategoryParentId/' + params.id, params, _callback);
+}
+
+export const useGetProductCate = (params, _callback) => async dispatch => {
+    await createGet(dispatch, 'product_by_cate', 'product/findAllByIdCategory/' + params.id, params, _callback);
 }

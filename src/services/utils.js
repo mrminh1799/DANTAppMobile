@@ -2,6 +2,7 @@ import {apiCallErrorAction, beginCallApi, endCallApi} from "@/stores/common/acti
 import {_delete, _get, _post, _put} from "../modules/api/index";
 
 export const createPost = async (dispatch, key, _url, _params, _callback = () => {
+}, _onError = () => {
 }) => {
     dispatch(beginCallApi(_url, _params))
     try {
@@ -10,11 +11,13 @@ export const createPost = async (dispatch, key, _url, _params, _callback = () =>
             _callback(response);
         })
     } catch (err) {
+        _onError(err)
         dispatch(apiCallErrorAction(err))
     }
 }
 
 export const createGet = async (dispatch, key, _url, _params, _callback = () => {
+}, _onError = () => {
 }) => {
     dispatch(beginCallApi(_url, _params))
     try {
@@ -24,11 +27,13 @@ export const createGet = async (dispatch, key, _url, _params, _callback = () => 
             _callback(response);
         })
     } catch (err) {
+        _onError(err)
         dispatch(apiCallErrorAction(err))
     }
 }
 
 export const createDelete = async (dispatch, key, _url, _params, _callback = () => {
+}, _onError = () => {
 }) => {
     dispatch(beginCallApi(_url, _params))
     try {
@@ -38,11 +43,13 @@ export const createDelete = async (dispatch, key, _url, _params, _callback = () 
             _callback(response);
         })
     } catch (err) {
+        _onError(err)
         dispatch(apiCallErrorAction(err))
     }
 }
 
 export const createPut = async (dispatch, key, _url, _params, _callback = () => {
+}, _onError = () => {
 }) => {
     dispatch(beginCallApi(_url, _params))
     try {
@@ -52,6 +59,7 @@ export const createPut = async (dispatch, key, _url, _params, _callback = () => 
             _callback(response);
         })
     } catch (err) {
+        _onError(err)
         dispatch(apiCallErrorAction(err))
     }
 }

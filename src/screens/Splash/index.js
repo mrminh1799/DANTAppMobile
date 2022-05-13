@@ -1,6 +1,5 @@
 import React from 'react';
 import {Box} from 'native-base';
-import {Image} from 'react-native';
 
 /* Import Component*/
 import {registerScreen} from '@/navigators/utils';

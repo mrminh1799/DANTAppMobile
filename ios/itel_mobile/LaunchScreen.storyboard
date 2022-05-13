@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" misplaced="YES" image="logo_large" highlightedImage="itel_logo" translatesAutoresizingMaskIntoConstraints="NO" id="Tf2-LB-Bmc">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" misplaced="YES" image="itel_logo" highlightedImage="itel_logo" translatesAutoresizingMaskIntoConstraints="NO" id="Tf2-LB-Bmc">
                                 <rect key="frame" x="0.0" y="181" width="375" height="395"/>
                                 <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
@@ -38,7 +38,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="itel_logo" width="250" height="250"/>
-        <image name="logo_large" width="500" height="500"/>
+        <image name="itel_logo" width="600" height="187"/>
     </resources>
 </document>

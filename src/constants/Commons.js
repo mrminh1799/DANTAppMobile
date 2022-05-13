@@ -3,6 +3,7 @@ export default {
     ACCESS_TOKEN_GG: 'ACCESS_TOKEN_GG',
     REMEMBER_LOGIN: "REMEMBER_LOGIN",
     AUTHOR_FACE_ID_TOUCH_ID: "AUTHOR_FACE_ID_TOUCH_ID",
+    CART_LIST: "CART_LIST",
     NOTIFICATION: {
         PERIODIC: 1,
         FORTUITY: 2,
@@ -34,5 +35,4 @@ export default {
         TASK_ASSIGN_STATUS: "TASK_ASSIGN_STATUS"
     },
     IMAGE_UPLOAD: "https://app.itel.vn/image/upload"
-    // IMAGE_UPLOAD: "http://123.30.50.94/image/upload"
 };

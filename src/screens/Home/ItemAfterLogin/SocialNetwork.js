@@ -1,6 +1,6 @@
 import React from 'react'
-import {Box, HStack, Text, useTheme} from "native-base";
-import {TouchableOpacity, Image, useWindowDimensions} from "react-native";
+import {Box, Text, useTheme} from "native-base";
+import {Image, useWindowDimensions} from "react-native";
 import {useTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import {useAuth} from "@/contexts";
@@ -25,7 +25,7 @@ const SocialNetwork = () => {
                           source={require('../../../assets/icons/iconuser.png')}/>
         }
     }
-    console.log(userInfo)
+
     return (
         <Box>
             <Box alignItems={'center'}>

@@ -1,18 +1,26 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Box, Image, Text, HStack} from "native-base";
-import {FlatList, Platform, RefreshControl, ScrollView, TouchableOpacity, useWindowDimensions} from "react-native";
+import {Box, HStack, Image, Text} from "native-base";
+import {
+    FlatList,
+    Platform,
+    RefreshControl,
+    SafeAreaView,
+    ScrollView,
+    TouchableOpacity,
+    useWindowDimensions
+} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 /*Import component*/
-import {registerScreen, tabBarRef} from '@/navigators/utils';
+import {navigate, registerScreen, tabBarRef} from '@/navigators/utils';
 import ItemAfterLogin from "@/screens/Home/ItemAfterLogin/index";
 import PropTypes from "prop-types";
-import ProductCard from "@/screens/Home/Product/ProductCard";
-import {useGetAllProducts, useGetTopBuy, useGetTopTen} from "@/services/Product";
+import ProductCard from "@/screens/Product/ProductCard";
+import {useGetTopBuy, useGetTopTen} from "@/services/Product";
 import {useDispatch, useSelector} from "react-redux";
-import {Colors} from "@/styles/Colors";
 import IconCNTTB from '../../assets/icons/iconSVG/cnttb.svg'
 import {useGetCategoryNav} from "@/services/Category";
+import {Colors} from "@/styles/Colors";
 
 
 const Name = 'CoopHome';
@@ -34,11 +42,11 @@ const CoopHome = ({navigation}) => {
     const allProductsBuy = useSelector(state => state.globalReducer.top_buy)
     const categoryNav = useSelector(state => state.globalReducer.cate_nav)
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(useGetTopTen())
         dispatch(useGetTopBuy())
         dispatch(useGetCategoryNav())
-    },[])
+    }, [])
 
     //callback when reload success
     const onRefresh = React.useCallback(() => {
@@ -49,8 +57,14 @@ const CoopHome = ({navigation}) => {
 
 
     const openDrawer = () => {
-        tabBarRef.current.hideTabBar();
-        navigation.openDrawer();
+        navigation.toggleDrawer();
+    }
+
+    const openCate = (item) => {
+        navigate('Category', {
+            lstChild: item?.listChild,
+            idParent: item?.idCategory
+        })
     }
 
     const renderOptions = useMemo(() => {
@@ -85,8 +99,8 @@ const CoopHome = ({navigation}) => {
                                 <TouchableOpacity
                                     style={[{marginBottom: 10, marginTop: 10}, index > 0 && {marginLeft: 20}]}
                                     key={index}
-                                    onPress={item.navigate}>
-                                    <Box w={70} flexDirection={'column'} alignItems={'center'}>
+                                    onPress={()=>openCate(item)}>
+                                    <Box w={(width - 40 - 80) / 4} flexDirection={'column'} alignItems={'center'}>
                                         <Box color={'white'}>
                                             <IconCNTTB width={50} height={50}/>
                                         </Box>
@@ -102,71 +116,73 @@ const CoopHome = ({navigation}) => {
     }, [categoryNav])
 
     return (
-        <Box flex={1} pt={Platform.OS === "ios" ? 10 : 0} bg={Colors.dark.redBase}>
-            <ItemAfterLogin
-                openDrawer={openDrawer}
-            />
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                scrollEventThrottle={16}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-                showsHorizontalScrollIndicator={false}
-            >
-                <Box flex={1} bg={'white'}>
-                    <Box mb={insets.bottom + 40}>
-                        <Box p={'5px'} shadow={1} mb={3}>
-                            <Image style={{height: 150, borderRadius: 8}}
-                                   source={{uri: "https://lh4.googleusercontent.com/-qW3mCh8EuAg/YUNWrZEC8tI/AAAAAAAAAt0/zheiI52e8DIXUYI1ggoeiIHYRCekpMdCwCLcBGAsYHQ/s0/BANNER%2BWEB.11112.1.jpg"}}/>
-                        </Box>
-                        <Text textAlign={'center'} fontWeight={700} fontSize={16}>Danh mục</Text>
-                        {renderOptions}
-                        <Box>
-                            <HStack justifyContent={'space-between'} mx={4} alignItems={'center'}>
-                                <TouchableOpacity>
-                                    <HStack alignItems={'center'}>
-                                        <Text fontWeight={'900'} fontSize={17}
-                                              lineHeight={28.13}>SẢN PHẨM YÊU THÍCH</Text>
-                                    </HStack>
-                                </TouchableOpacity>
-                            </HStack>
-                            <FlatList
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                data={allProducts}
-                                renderItem={(item) => <ProductCard
-                                    value={item}
-                                />}
-                                keyExtractor={(item, index) => index}/>
-                        </Box>
-                        <Box>
-                            <HStack justifyContent={'space-between'} mx={4} alignItems={'center'}>
-                                <TouchableOpacity>
-                                    <HStack alignItems={'center'}>
-                                        <Text fontWeight={'900'} fontSize={17}
-                                              lineHeight={28.13}>SẢN PHẨM BÁN CHẠY</Text>
-                                    </HStack>
-                                </TouchableOpacity>
-                            </HStack>
-                            <FlatList
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                data={allProductsBuy}
-                                renderItem={(item) => <ProductCard
-                                    value={item}
-                                />}
-                                keyExtractor={(item, index) => index}/>
-                        </Box>
+        <SafeAreaView style={{flex: 1, backgroundColor: Colors.light.redBase, paddingTop: Platform.OS === "ios" ? 10 : 0}}>
+            <Box flex={1} bg={'white'}>
+                <ItemAfterLogin
+                    openDrawer={openDrawer}
+                />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={16}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                    showsHorizontalScrollIndicator={false}
+                >
+                    <Box flex={1} bg={'white'}>
+                        <Box mb={insets.bottom + 10}>
+                            <Box p={'5px'} shadow={1} mb={3}>
+                                <Image style={{height: 150, borderRadius: 8}}
+                                       source={{uri: "https://lh4.googleusercontent.com/-qW3mCh8EuAg/YUNWrZEC8tI/AAAAAAAAAt0/zheiI52e8DIXUYI1ggoeiIHYRCekpMdCwCLcBGAsYHQ/s0/BANNER%2BWEB.11112.1.jpg"}}/>
+                            </Box>
+                            <Text textAlign={'center'} fontWeight={700} fontSize={16}>Danh mục</Text>
+                            {renderOptions}
+                            <Box>
+                                <HStack justifyContent={'space-between'} mx={4} alignItems={'center'}>
+                                    <TouchableOpacity>
+                                        <HStack alignItems={'center'}>
+                                            <Text fontWeight={'900'} fontSize={17}
+                                                  lineHeight={28.13}>SẢN PHẨM YÊU THÍCH</Text>
+                                        </HStack>
+                                    </TouchableOpacity>
+                                </HStack>
+                                <FlatList
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allProducts}
+                                    renderItem={(item) => <ProductCard
+                                        value={item}
+                                    />}
+                                    keyExtractor={(item, index) => index}/>
+                            </Box>
+                            <Box>
+                                <HStack justifyContent={'space-between'} mx={4} alignItems={'center'}>
+                                    <TouchableOpacity>
+                                        <HStack alignItems={'center'}>
+                                            <Text fontWeight={'900'} fontSize={17}
+                                                  lineHeight={28.13}>SẢN PHẨM BÁN CHẠY</Text>
+                                        </HStack>
+                                    </TouchableOpacity>
+                                </HStack>
+                                <FlatList
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allProductsBuy}
+                                    renderItem={(item) => <ProductCard
+                                        value={item}
+                                    />}
+                                    keyExtractor={(item, index) => index}/>
+                            </Box>
 
+                        </Box>
                     </Box>
-                </Box>
 
-            </ScrollView>
-        </Box>
+                </ScrollView>
+            </Box>
+        </SafeAreaView>
     );
 };
 CoopHome.propTypes = {
