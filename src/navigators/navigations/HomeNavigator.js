@@ -6,6 +6,7 @@ import messaging from '@react-native-firebase/messaging';
 import {useAuth} from '@/contexts';
 import ProductDetail from "@/screens/Product/ProductDetail";
 import Cart from "@/screens/Cart";
+import Checkout from "@/screens/Cart/Checkout";
 import User from "@/screens/User";
 import Order from "@/screens/Order";
 import Category from "@/screens/Category";
@@ -45,6 +46,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...ChangePass.screen} />
             <HomeStack.Screen {...Order.screen} />
             <HomeStack.Screen {...Category.screen} />
+            <HomeStack.Screen {...Checkout.screen} />
         </HomeStack.Navigator>
     );
 };

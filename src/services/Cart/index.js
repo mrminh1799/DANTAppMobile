@@ -1,4 +1,4 @@
-import {createGet, createPost} from "@/services/utils";
+import {createDelete, createGet, createPost} from "@/services/utils";
 
 
 export const useCart = (params, _callback) => async dispatch => {
@@ -12,4 +12,7 @@ export const addCart = (params, _callback) => async dispatch => {
 }
 export const updateCart = (params, _callback) => async dispatch => {
     await createGet(dispatch, 'updateCart', 'cart/updateQuantity/' + params.idAccount + "/" + params.idProductDetail + '/' + params.quantity, params, _callback);
+}
+export const deleteCart = (params, _callback) => async dispatch => {
+    await createDelete(dispatch, 'deleteCart', 'cart/deleteByidProduct/' + params.idAccount + "/" + params.idProductDetail, params, _callback);
 }
