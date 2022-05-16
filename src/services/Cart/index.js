@@ -16,3 +16,6 @@ export const updateCart = (params, _callback) => async dispatch => {
 export const deleteCart = (params, _callback) => async dispatch => {
     await createDelete(dispatch, 'deleteCart', 'cart/deleteByidProduct/' + params.idAccount + "/" + params.idProductDetail, params, _callback);
 }
+export const deleteAllCart = (params, _callback) => async dispatch => {
+    await createDelete(dispatch, 'deleteAllCart', 'cart/deleteAllByIdAccount/' + params.idAccount, params, _callback);
+}

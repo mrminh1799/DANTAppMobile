@@ -9,6 +9,8 @@ import _ from "lodash";
 import {addCart, addToCart} from "@/services/Cart";
 import {useDispatch} from "react-redux";
 import {useAuth} from "@/contexts";
+import ToastMessageService from "@/components/ToastAlert/ToastMessageService";
+import ToastMessage from "@/components/ToastAlert/ToastMessage";
 
 const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
 
@@ -162,6 +164,7 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
             idProductDetail: currentData.id,
             quantity: quantity
         }))
+        ToastMessageService._openMessage('Đã thêm vào giỏ hàng')
     }
 
     return <Actionsheet isOpen={openChoose} onClose={() => setOpenChoose(false)}>
@@ -329,6 +332,7 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
                             }}
                         </Pressable>
                     </Box>
+                    <ToastMessage/>
                 </Pressable>
             </Actionsheet.Content>
         </KeyboardAvoidingView>

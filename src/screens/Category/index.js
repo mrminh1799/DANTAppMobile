@@ -19,6 +19,7 @@ const Name = "Category"
 const ScreenOptions = {
     headerShown: false,
 };
+const DEFAULT_IMAGE = 'https://mcdn.nhanh.vn/store/2071/ps/20220416/TP200.jpg'
 const Category = ({route}) => {
 
     const {params} = route
@@ -121,7 +122,7 @@ const Category = ({route}) => {
 
         return (<Pressable mb={'20px'} w={(width - 70) / 2} onPress={toDetailProduct} ml={index % 2 !== 0 ? '20px' : 0}>
             <ImageBlurShadow
-                source={{uri: 'https://mcdn.nhanh.vn/store/2071/ps/20220416/TP200.jpg'}}
+                source={{uri: item?.image ? item.image : DEFAULT_IMAGE}}
                 imageWidth={(width - 70) / 2}
                 imageHeight={((width - 70) / 2) / 275 * 413}
                 imageBorderRadius={10}

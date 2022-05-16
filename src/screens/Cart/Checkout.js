@@ -12,6 +12,7 @@ import {newOrder} from "@/services/Order";
 import {NativeBaseProvider} from "native-base/src/core/NativeBaseProvider";
 import _ from "lodash";
 import {CommonActions} from "@react-navigation/core";
+import {deleteAllCart} from "@/services/Cart";
 
 const Name = 'Checkout'
 
@@ -83,6 +84,9 @@ const Checkout = ({route}) => {
                 quantity: item.quantity
             }))
         }, () => {
+            dispatch(deleteAllCart({
+                idAccount: userInfo.id
+            }))
             DialogBoxService.alert('Đặt hàng thành công', () => navigatorRef.current.dispatch((routes) => {
                 return CommonActions.reset({
                     ...routes,

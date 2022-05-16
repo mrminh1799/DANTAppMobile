@@ -8,6 +8,7 @@ import {DialogBoxService, DialogBox} from "@/components";
 import DrawerNavigator from "./DrawerNavigator";
 import {PaymentProvider} from "@/contexts/PaymentContext";
 import ModalSelection from "@/components/SelectInput/ModalSelection";
+import ToastMessage from "@/components/ToastAlert/ToastMessage";
 
 const App = () => {
     const routeNameRef = React.useRef();
@@ -39,6 +40,7 @@ const App = () => {
                     <DialogBox childRef={(ref) => DialogBoxService.setDialogRef(ref)}/>
                 </AuthProvider>
                 <ModalSelection/>
+                <ToastMessage/>
             </>
         </NavigationContainer>
     );
