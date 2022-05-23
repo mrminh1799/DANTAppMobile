@@ -118,7 +118,7 @@ const ModalSelection = () => {
                     <Actionsheet.Header pt={'4px'} pb={3} borderBottomWidth={1} borderColor={Colors.light.smoke}
                                         width={width}>
                         <Text textAlign={'center'} fontWeight={600} fontSize={16}
-                              lineHeight={20}>{t('Option', {ns: "Common"})}</Text>
+                              lineHeight={20}>Tuỳ chọn</Text>
                     </Actionsheet.Header>
                     <Modal.CloseButton top={0}/>
                 </Box>

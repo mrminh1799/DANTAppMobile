@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {registerScreen} from "@/navigators/utils";
 import {Box, Icon, Text} from "native-base";
 import {Header} from "@/components";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useAuth} from "@/contexts";
 import ScrollableTabView from "@itenl/react-native-scrollable-tabview";
 import {useWindowDimensions} from "react-native";
@@ -38,13 +38,15 @@ const Order = ({route}) => {
 
     const ref = useRef()
 
+    const localOrder = useSelector(state => state.globalReducer.order)
+
     useEffect(() => {
         setTab(params.tab)
         ref?.current?.toTabView(params?.tab ? params?.tab : 0)
     }, [params?.tab])
 
     useEffect(() => {
-        if (userInfo) {
+        if (localOrder) {
             let temp = {
                 0: [],
                 1: [],
@@ -54,15 +56,18 @@ const Order = ({route}) => {
                 5: [],
                 6: [],
             }
+            localOrder.map(item => {
+                temp?.[item?.status]?.push(item)
+            })
+            setOrder(temp)
+        }
+    }, [localOrder])
+
+    useEffect(() => {
+        if (userInfo) {
             dispatch(getOrder({
                 id: userInfo.id
-            }, (res) => {
-                res.map(item => {
-                    temp?.[item?.status]?.push(item)
-                })
-                setOrder(temp)
             }))
-            params.setRefreshing(true)
         }
     }, [userInfo])
 
@@ -141,25 +146,10 @@ const Order = ({route}) => {
             <Header title={'Đơn mua'} isBack/>
             <ScrollableTabView
                 ref={scrollRef => ref.current = scrollRef}
-                onBeforeEndReached={()=>{
-                    let temp = {
-                        0: [],
-                        1: [],
-                        2: [],
-                        3: [],
-                        4: [],
-                        5: [],
-                        6: [],
-                    }
+                onBeforeRefresh={()=>{
                     dispatch(getOrder({
                         id: userInfo.id
-                    }, (res) => {
-                        res.map(item => {
-                            temp?.[item?.status]?.push(item)
-                        })
-                        setOrder(temp)
                     }))
-                    params.setRefreshing(true)
                 }}
                 tabsStyle={{
                     height: 40,
@@ -199,12 +189,16 @@ const Order = ({route}) => {
                         tabLabel: "Hoàn thành",
                     },
                     {
-                        screen: () => OrderList(5),
+                        screen: () => OrderList(6),
                         tabLabel: "Đã đổi trả",
                     },
                     {
+                        screen: () => OrderList(4),
+                        tabLabel: "Đã huỷ",
+                    },
+                    {
                         screen: () => OrderList(0),
-                        tabLabel: "Thất bại",
+                        tabLabel: "Đã bị huỷ",
                     },
                 ]}/>
         </Box>

@@ -8,10 +8,10 @@ import {Colors} from "@/styles/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {useDispatch, useSelector} from "react-redux";
 import {useGetDetailProduct, useGetProductCate, useGetProductParent} from "@/services/Product";
-import ImageBlurShadow from "@/components/ImageBlurShadow";
 import {loadAnimated} from "@/utils/Other";
 import FormatText from "../../components/FormatText";
 import _ from "lodash";
+import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated";
 
 
 const Name = "Category"
@@ -75,11 +75,11 @@ const Category = ({route}) => {
         }
     }, [curCate])
 
-    const handleSearch = () => {
+    const handleSearch = (text) => {
         if (curCate?.isParent) {
-            setLstProduct(productParent.filter(item => FormatText(item.name).includes(search)))
+            setLstProduct(productParent.filter(item => FormatText(item.name).includes(FormatText(text))))
         } else {
-            setLstProduct(productChild.filter(item => FormatText(item.name).includes(search)))
+            setLstProduct(productChild.filter(item => FormatText(item.name).includes(FormatText(text))))
         }
     }
 
@@ -120,20 +120,30 @@ const Category = ({route}) => {
             })
         }
 
-        return (<Pressable mb={'20px'} w={(width - 70) / 2} onPress={toDetailProduct} ml={index % 2 !== 0 ? '20px' : 0}>
-            <ImageBlurShadow
-                source={{uri: item?.image ? item.image : DEFAULT_IMAGE}}
-                imageWidth={(width - 70) / 2}
-                imageHeight={((width - 70) / 2) / 275 * 413}
-                imageBorderRadius={10}
-                shadowNewOffset={30}
-                shadowBlurRadius={20}
-                shadowBackgroundColor={'#ffffff'}
+        return (<Pressable style={{
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 7,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 9.11,
+
+            elevation: 14,
+        }} bg={'white'} rounded={8} mb={'20px'} pb={'5px'} w={(width - 70) / 2} onPress={toDetailProduct} ml={index % 2 !== 0 ? '20px' : 0}>
+            <FastImageAnimated
+                thumb={item?.image ? item.image : DEFAULT_IMAGE}
+                style={{
+                    width: (width - 70) / 2,
+                    height: ((width - 70) / 2) / 275 * 413
+                }}
+                width={(width - 70) / 2}
+                height={((width - 70) / 2) / 275 * 413}
             />
-            <Text mt={'-16px'} fontWeight={700} noOfLines={1}>
+            <Text px={'10px'} pt={'10px'} fontWeight={700} noOfLines={1}>
                 {item?.name}
             </Text>
-            <Text color={Colors.light.redBase} fontWeight={600}>
+            <Text px={'10px'} color={Colors.light.redBase} fontWeight={600}>
                 {item?.price}đ
             </Text>
         </Pressable>)
@@ -148,9 +158,9 @@ const Category = ({route}) => {
                 <Input
                     onChangeText={text => {
                         setSearch(text)
+                        handleSearch(text)
                     }}
                     value={search}
-                    onBlur={handleSearch}
                     leftElement={<Icon as={<Feather name={'search'}/>} ml={'10px'} size={6}
                                        color={Colors.light.mediumContrast}/>}
                     fontSize={14} bg={'#f1f0f0'} borderWidth={0} px={'10px'}
@@ -179,9 +189,14 @@ const Category = ({route}) => {
                 <Text>Không có sản phẩm nào!</Text>
             </Box>
             :
-            <FlatList style={{
-                marginHorizontal: 25
-            }} data={lstProduct} numColumns={2} renderItem={(value) => <RenderProduct {...value}/>}/>
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={{
+                    paddingHorizontal: 25,
+                    backgroundColor: '#eee',
+                    paddingTop: 15,
+                    marginBottom: insets.bottom
+                }} data={lstProduct} numColumns={2} renderItem={(value) => <RenderProduct {...value}/>}/>
     }, [lstProduct])
 
     return (

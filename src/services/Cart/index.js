@@ -1,4 +1,5 @@
 import {createDelete, createGet, createPost} from "@/services/utils";
+import axiosHelper from "@/utils/axiosHelper";
 
 
 export const useCart = (params, _callback) => async dispatch => {
@@ -18,4 +19,8 @@ export const deleteCart = (params, _callback) => async dispatch => {
 }
 export const deleteAllCart = (params, _callback) => async dispatch => {
     await createDelete(dispatch, 'deleteAllCart', 'cart/deleteAllByIdAccount/' + params.idAccount, params, _callback);
+}
+//lay tinh thanh phố
+export const findCity = () => {
+    return axiosHelper.get("https://provinces.open-api.vn/api/?depth=3");
 }

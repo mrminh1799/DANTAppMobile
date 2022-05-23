@@ -51,7 +51,7 @@ const SelectInputFull = (props) => {
                     borderRadius: 8,
                     borderColor: Colors.dark.lightShade
                 }, style, disable && {
-                    backgroundColor: Colors.light.mediumTint,
+                    backgroundColor: Colors.light.lightShade,
                     borderColor: Colors.dark.mediumTint
                 }]}
             >

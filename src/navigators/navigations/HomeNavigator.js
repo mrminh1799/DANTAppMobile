@@ -12,6 +12,7 @@ import Order from "@/screens/Order";
 import Category from "@/screens/Category";
 import ConfirmPass from "@/screens/User/ConfirmPass";
 import ChangePass from "@/screens/User/ChangePass";
+import ChangeInfo from "@/screens/User/ChangeInfo";
 
 
 const HomeStack = createNativeStackNavigator();
@@ -47,6 +48,7 @@ const HomeNavigator = () => {
             <HomeStack.Screen {...Order.screen} />
             <HomeStack.Screen {...Category.screen} />
             <HomeStack.Screen {...Checkout.screen} />
+            <HomeStack.Screen {...ChangeInfo.screen} />
         </HomeStack.Navigator>
     );
 };

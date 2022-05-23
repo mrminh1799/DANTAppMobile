@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {navigatorRef, registerScreen} from "@/navigators/utils";
 import {Box, FormControl, Input, Text, WarningOutlineIcon} from "native-base";
 import {DialogBoxService, Header} from "@/components";
@@ -8,11 +8,13 @@ import {FlatList, StyleSheet, TouchableOpacity, useWindowDimensions} from "react
 import {useAuth} from "@/contexts";
 import {useDispatch} from "react-redux";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {newOrder} from "@/services/Order";
+import {getOrder, newOrder} from "@/services/Order";
 import {NativeBaseProvider} from "native-base/src/core/NativeBaseProvider";
 import _ from "lodash";
 import {CommonActions} from "@react-navigation/core";
-import {deleteAllCart} from "@/services/Cart";
+import {deleteAllCart, findCity} from "@/services/Cart";
+import SelectInputFull from "@/components/SelectInput/SelectInputFullwidth";
+import {FormProvider, useForm} from "react-hook-form";
 
 const Name = 'Checkout'
 
@@ -33,6 +35,27 @@ const Checkout = ({route}) => {
 
     const dispatch = useDispatch()
 
+    const formMethods = useForm()
+
+    const [addressCity, setAddressCity] = useState({
+        lstData: [],
+        labelKey: 'name',
+        valueKey: 'code',
+        data: {}
+    })
+    const [addressQuan, setAddressQuan] = useState({
+        lstData: [],
+        labelKey: 'name',
+        valueKey: 'code',
+        data: {}
+    })
+    const [addressPhuong, setAddressPhuong] = useState({
+        lstData: [],
+        labelKey: 'name',
+        valueKey: 'code',
+        data: {}
+    })
+
     const [order, setOrder] = useState({
         fullName: userInfo.fullname,
         idAcount: userInfo.id,
@@ -40,6 +63,15 @@ const Checkout = ({route}) => {
         detailAddress: '',
         phoneNumber: userInfo.username
     })
+
+    useEffect(() => {
+        findCity().then(res => {
+            setAddressCity({
+                ...addressCity,
+                lstData: res?.data
+            })
+        })
+    }, [])
 
     const renderItem = ({item, index}) => {
         return <Box bg={"white"} py={4} w={width} flexDir={'row'} px={'15px'} borderBottomWidth={1}
@@ -76,16 +108,21 @@ const Checkout = ({route}) => {
     }
 
     const handleOrder = () => {
-        if (_.isEmpty(order.fullName) || _.isEmpty(order.address) || _.isEmpty(order.detailAddress) || _.isEmpty(order.phoneNumber)) return
+        console.log(_.isEmpty(order.fullName), _.isEmpty(order.detailAddress), _.isEmpty(order.phoneNumber),  _.isEmpty(addressCity.data),  _.isEmpty(addressQuan.data),  _.isEmpty(addressPhuong.data))
+        if (_.isEmpty(order.fullName) || _.isEmpty(order.detailAddress) || _.isEmpty(order.phoneNumber) ||  _.isEmpty(addressCity.data) ||  _.isEmpty(addressQuan.data) ||  _.isEmpty(addressPhuong.data)) return
         dispatch(newOrder({
             ...order,
+            address: addressCity.data.name + ", " + addressQuan.data.name + ', ' + addressPhuong.data.name,
             listOrderProductDetailDTO: params.cart.map(item => ({
                 idProductDetail: item.idProduct,
                 quantity: item.quantity
             }))
         }, () => {
-            dispatch(deleteAllCart({
+            !params?.isKeep && dispatch(deleteAllCart({
                 idAccount: userInfo.id
+            }))
+            dispatch(getOrder({
+                id: userInfo.id
             }))
             DialogBoxService.alert('Đặt hàng thành công', () => navigatorRef.current.dispatch((routes) => {
                 return CommonActions.reset({
@@ -115,13 +152,80 @@ const Checkout = ({route}) => {
                         Không được bỏ trống trường này
                     </FormControl.ErrorMessage>
                 </FormControl>
-                <FormControl isInvalid={_.isEmpty(order.address)}>
-                    <FormControl.Label isRequired>Địa chỉ</FormControl.Label>
-                    <Input value={order?.address} onChangeText={text => handleChangeText(text, 'address')}/>
-                    <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs"/>}>
-                        Không được bỏ trống trường này
-                    </FormControl.ErrorMessage>
-                </FormControl>
+                <FormProvider {...formMethods}>
+                    <FormControl isInvalid={_.isEmpty(addressCity.data)}>
+                        <FormControl.Label isRequired>Thành phố</FormControl.Label>
+                        <SelectInputFull defaultValue={''} name={'city'} data={addressCity}
+                                         style={{
+                                             height: 33,
+                                             borderRadius: 4
+                                         }}
+                                         onChange={(value) => {
+                                             formMethods.setValue('city', value)
+                                             formMethods.setValue('quan', '')
+                                             formMethods.setValue('phuong', '')
+                                             setAddressCity({
+                                                 ...addressCity,
+                                                 data: value
+                                             })
+                                             setAddressQuan({
+                                                 ...addressQuan,
+                                                 lstData: value?.districts,
+                                                 data: {}
+                                             })
+                                             setAddressPhuong({
+                                                 ...addressPhuong,
+                                                 data: {}
+                                             })
+                                         }}/>
+                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs"/>}>
+                            Không được bỏ trống trường này
+                        </FormControl.ErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={_.isEmpty(addressQuan.data)}>
+                        <FormControl.Label isRequired>Quận/Huyện</FormControl.Label>
+                        <SelectInputFull defaultValue={''} name={'quan'} data={addressQuan}
+                                         style={{
+                                             height: 33,
+                                             borderRadius: 4
+                                         }}
+                                         disable={_.isEmpty(addressCity?.data)}
+                                         onChange={(value) => {
+                                             formMethods.setValue('quan', value)
+                                             setAddressQuan({
+                                                 ...addressQuan,
+                                                 data: value
+                                             })
+                                             setAddressPhuong({
+                                                 ...addressPhuong,
+                                                 lstData: value?.wards,
+                                                 data: {}
+                                             })
+                                         }}/>
+                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs"/>}>
+                            Không được bỏ trống trường này
+                        </FormControl.ErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={_.isEmpty(addressPhuong.data)}>
+                        <FormControl.Label isRequired>Phường/Xã</FormControl.Label>
+                        <SelectInputFull defaultValue={''} name={'phuong'} data={addressPhuong}
+                                         style={{
+                                             height: 33,
+                                             borderRadius: 4
+                                         }}
+                                         disable={addressPhuong?.lstData?.length <= 0}
+                                         onChange={(value) => {
+                                             formMethods.setValue('phuong', value)
+                                             setAddressPhuong({
+                                                 ...addressPhuong,
+                                                 data: value
+                                             })
+                                         }}/>
+                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs"/>}>
+                            Không được bỏ trống trường này
+                        </FormControl.ErrorMessage>
+                    </FormControl>
+                </FormProvider>
                 <FormControl isInvalid={_.isEmpty(order?.detailAddress)}>
                     <FormControl.Label isRequired>Địa chỉ chi tiết</FormControl.Label>
                     <Input value={order?.detailAddress} onChangeText={text => handleChangeText(text, 'detailAddress')}/>

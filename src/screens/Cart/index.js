@@ -33,6 +33,7 @@ const Cart = () => {
 
     const [cart, setCart] = useState([])
 
+    console.log('cart',cart)
     useEffect(() => {
         if (userInfo) {
             dispatch(useCart({
@@ -105,7 +106,7 @@ const Cart = () => {
                         thumb={item?.colorImage}/>
                 </Box>
             </Box>
-            <Box pl={'10px'} flexGrow={1}>
+            <Box pl={'10px'} flexGrow={1} flexShrink={1}>
                 <Text fontWeight={700} fontSize={16}>{item?.productName.trim()}</Text>
                 <Text mt={1}>Phân loại: {item.colorName} - {item.sizeName}</Text>
                 <Box flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
@@ -183,7 +184,7 @@ const Cart = () => {
                         })
                     }} style={{
                         backgroundColor: Colors.light.redBase,
-                        borderRadius: 18,
+                        borderRadius: 10,
                         paddingVertical: 12,
                         marginTop: 16
                     }} activeOpacity={0.6}>
