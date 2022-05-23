@@ -4,10 +4,18 @@ import {Box, Icon, Pressable, Text} from "native-base";
 import {DialogBoxService} from "@/components";
 import Entypo from "react-native-vector-icons/Entypo";
 import {Colors} from "@/styles/Colors";
-import {Image, Linking, Platform, RefreshControl, TouchableOpacity, useWindowDimensions, ScrollView} from "react-native";
+import {
+    Image,
+    Linking,
+    Platform,
+    RefreshControl,
+    ScrollView,
+    TouchableOpacity,
+    useWindowDimensions
+} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import {useAuth} from "@/contexts";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import LinearGradient from "react-native-linear-gradient";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -34,8 +42,28 @@ const User = () => {
 
     const [order, setOrder] = useState({})
 
+    const localOrder = useSelector(state => state.globalReducer.order)
+
     //refresh api when scroll down
     const [refreshing, setRefreshing] = React.useState(false);
+
+    useEffect(() => {
+        if (localOrder) {
+            let temp = {
+                0: [],
+                1: [],
+                2: [],
+                3: [],
+                4: [],
+                5: [],
+                6: [],
+            }
+            localOrder.map(item => {
+                temp?.[item?.status]?.push(item)
+            })
+            setOrder(temp)
+        }
+    }, [localOrder])
 
     useEffect(() => {
         if (userInfo) {
@@ -50,44 +78,28 @@ const User = () => {
             }
             dispatch(getOrder({
                 id: userInfo.id
-            }, (res) => {
-                res.map(item => {
-                    temp?.[item?.status]?.push(item)
-                })
-                setOrder(temp)
             }))
         }
     }, [userInfo, refreshing])
 
     //callback when reload success
     const onRefresh = React.useCallback(() => {
-        let temp = {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-            6: [],
-        }
         dispatch(getOrder({
             id: userInfo.id
-        }, (res) => {
-            res.map(item => {
-                temp?.[item?.status]?.push(item)
-            })
-            setOrder(temp)
         }))
-        setRefreshing(false)
     }, []);
 
     const changePassword = () => {
         navigate('ConfirmPass')
     }
 
-    useEffect(()=>{
-        if(refreshing) setRefreshing(false)
-    },[refreshing])
+    const toChangeInfo = () => {
+        navigate('ChangeInfo')
+    }
+
+    useEffect(() => {
+        if (refreshing) setRefreshing(false)
+    }, [refreshing])
 
     const handleCall = () => {
         let phoneNumber = '';
@@ -110,10 +122,9 @@ const User = () => {
     }
 
     const handleToOrder = (tab = 0) => {
-      navigate('Order',{
-          tab: tab,
-          setRefreshing: setRefreshing
-      })
+        navigate('Order', {
+            tab: tab
+        })
     }
 
     const logout = () => {
@@ -155,7 +166,8 @@ const User = () => {
                 }
             >
                 <Box mt={'10px'} bg={'white'}>
-                    <Pressable onPress={handleToOrder} py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}
+                    <Pressable onPress={handleToOrder} py={3} px={'10px'} flexDir={'row'} alignItems={'center'}
+                               justifyContent={'space-between'}
                                borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
                         <Box flexDir={'row'} alignItems={'center'}>
                             <Icon as={<Feather name={'clipboard'}/>} size={5}/>
@@ -168,11 +180,12 @@ const User = () => {
                         </Box>
                     </Pressable>
                     <Box flexDir={'row'} py={'18px'}>
-                        <Pressable onPress={()=>handleToOrder(0)} flex={1} alignItems={'center'}>
+                        <Pressable onPress={() => handleToOrder(0)} flex={1} alignItems={'center'}>
                             <Box>
                                 {
                                     order?.[1]?.length > 0 &&
-                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999} right={-10} top={-3} px={'6px'} rounded={'full'}
+                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999}
+                                         right={-10} top={-3} px={'6px'} rounded={'full'}
                                          bg={Colors.light.redBase}>
                                         <Text fontSize={13} color={'white'}>{order[1].length}</Text>
                                     </Box>
@@ -181,11 +194,12 @@ const User = () => {
                             </Box>
                             <Text fontSize={12} mt={2}>Chờ xác nhận</Text>
                         </Pressable>
-                        <Pressable onPress={()=>handleToOrder(1)} flex={1} alignItems={'center'}>
+                        <Pressable onPress={() => handleToOrder(1)} flex={1} alignItems={'center'}>
                             <Box>
                                 {
                                     order?.[2]?.length > 0 &&
-                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999} right={-10} top={-3} px={'6px'} rounded={'full'}
+                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999}
+                                         right={-10} top={-3} px={'6px'} rounded={'full'}
                                          bg={Colors.light.redBase}>
                                         <Text fontSize={13} color={'white'}>{order[2].length}</Text>
                                     </Box>
@@ -194,11 +208,12 @@ const User = () => {
                             </Box>
                             <Text fontSize={12} mt={2}>Đã xử lý</Text>
                         </Pressable>
-                        <Pressable onPress={()=>handleToOrder(2)} flex={1} alignItems={'center'}>
+                        <Pressable onPress={() => handleToOrder(2)} flex={1} alignItems={'center'}>
                             <Box>
                                 {
                                     order?.[3]?.length > 0 &&
-                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999} right={-10} top={-3} px={'6px'} rounded={'full'}
+                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999}
+                                         right={-10} top={-3} px={'6px'} rounded={'full'}
                                          bg={Colors.light.redBase}>
                                         <Text fontSize={13} color={'white'}>{order[3].length}</Text>
                                     </Box>
@@ -207,11 +222,12 @@ const User = () => {
                             </Box>
                             <Text fontSize={12} mt={2}>Hoàn thành</Text>
                         </Pressable>
-                        <Pressable onPress={()=>handleToOrder(4)} flex={1} alignItems={'center'}>
+                        <Pressable onPress={() => handleToOrder(4)} flex={1} alignItems={'center'}>
                             <Box>
                                 {
                                     order?.[0]?.length > 0 &&
-                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999} right={-10} top={-3} px={'6px'} rounded={'full'}
+                                    <Box position={'absolute'} borderWidth={1} borderColor={'white'} zIndex={999}
+                                         right={-10} top={-3} px={'6px'} rounded={'full'}
                                          bg={Colors.light.redBase}>
                                         <Text fontSize={13} color={'white'}>{order[0].length}</Text>
                                     </Box>
@@ -223,7 +239,7 @@ const User = () => {
                     </Box>
                 </Box>
                 <Box mt={'10px'} bg={'white'}>
-                    <Pressable py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}
+                    <Pressable onPress={toChangeInfo} py={3} px={'10px'} flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}
                                borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
                         <Box flexDir={'row'} alignItems={'center'}>
                             <Icon as={<Feather name={'user'}/>} size={5}/>

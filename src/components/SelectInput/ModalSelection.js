@@ -1,30 +1,34 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Platform, Dimensions, FlatList, TouchableOpacity, View, useWindowDimensions} from 'react-native'
-import {Icon, Text, Radio, Input, Box, Modal, HStack, ScrollView} from 'native-base'
+import React, {useEffect, useRef, useState} from 'react';
+import {
+    Animated,
+    Dimensions, Easing,
+    Keyboard,
+    KeyboardAvoidingView, Platform,
+    StyleSheet,
+    TouchableOpacity,
+    useWindowDimensions
+} from 'react-native'
+import {Actionsheet, Box, Input, Modal, Pressable, ScrollView, Text} from 'native-base'
 import Event from '../../utils/EventRegister'
 
 import FormatText from "../FormatText/index";
-import {loop} from "react-native-reanimated/src/reanimated2/animation/repeat";
+import {Colors} from "@/styles/Colors";
+import {useTranslation} from "react-i18next";
 
 const ModalSelection = () => {
-    const [isFocused, setIsFocused] = useState(false);
     const [isVisible, setVisible] = useState(false)
     const [state, setState] = useState({})
     const [textSearch, setTextSearch] = useState('');
     const [searchData, setSearchData] = useState([]);
     const {width, height} = useWindowDimensions()
     const ref = useRef();
-    const snapPoints = React.useMemo(() => ['0%', '65%', '75%'], [])
-    const handleSheetChange = useCallback((index) => {
-        if (index === 0) {
-            setVisible(false)
-        }
-    }, [])
+    const refAni = useRef(new Animated.Value(16)).current
+    const {t, i18n} = useTranslation(['Common', 'HomePage'], {i18n});
 
 
     useEffect(() => {
         //Add event modal select
-        Event.on("modalOpen", ({visible, data, onChange, value, search}) => {
+        Event.on("modalOpen", ({visible, data, onChange, value, search, isObject}) => {
             setVisible(visible)
             ref?.current?.snapTo(1)
             setSearchData(data?.lstData)
@@ -35,6 +39,7 @@ const ModalSelection = () => {
                 valueKey: data?.valueKey,
                 onChange: onChange,
                 value: value,
+                isObject: isObject,
                 headerName: data?.headerName ? data?.headerName : "Chọn",
                 search: search ? search : ''
             })
@@ -44,10 +49,9 @@ const ModalSelection = () => {
             Event.off("modalOpen")
             setVisible(false)
         }
-    }, [])
+    }, []);
 
     const handleChange = (item) => {
-        // console.log('0-0-022',item)
         state.onChange(item)
         setVisible(!isVisible)
         ref?.current?.snapTo(0)
@@ -55,109 +59,114 @@ const ModalSelection = () => {
 
     const handleChangeSearch = (text) => {
         let formatText = FormatText(text)
-        let data = state?.lstData?.filter(item => Object.keys(item).some(key =>{
-            return FormatText(String(item[key])).includes(formatText)
-        }))
+        let data = []
+        if(state.isObject){
+            data = state?.lstData?.filter(item => Object.keys(item).some(key => {
+                return FormatText(String(item[key])).includes(formatText)
+            }))
+        }else{
+            data = state?.lstData?.filter(item => FormatText(String(item).includes(formatText)))
+        }
         setSearchData(data)
         setTextSearch(text)
     }
+
+    function onKeyboardDidShow(e: KeyboardEvent) { // Remove type here if not using TypeScript
+        Animated.timing(refAni, {
+            toValue: e.endCoordinates.height,
+            duration: 100,
+        }).start()
+    }
+
+    function onKeyboardDidHide() {
+        Animated.timing(refAni, {
+            toValue: 0,
+            duration: 100,
+        }).start()
+    }
+
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+        const hideSubscription = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
     // eslint-disable-next-line react/prop-types
     const renderItem = (item) => {
-        const isCheck = state.value && item[state.valueKey] === state.value[state.valueKey];
         return (
             <TouchableOpacity onPress={() => handleChange(item)}>
-                <Box>
+                <Box borderBottomWidth={1} px={'16px'} borderColor={'#ededef'} flexDir={'row'}>
                     <Text
-                        m={'8px'}
+                        m={'14px'}
                         color={'black'}
-                        maxW={(width - 64) * 0.8}
                         fontSize={16}
                         lineHeight={18}
                     >
-                        {item[state.labelKey]}
+                        {state.isObject ? item[state.labelKey] : item}
                     </Text>
-                    {/*<Radio activeColor={'black'} onPress={() => handleChange(item)} checked={isCheck}>*/}
-                    {/*    <Box/>*/}
-                    {/*</Radio>*/}
                 </Box>
             </TouchableOpacity>
         )
     }
 
-    const handleHide = () => {
-        ref.current.snapTo(0)
-        setVisible(false)
+    const renderContent = () => {
+        return <Pressable onPress={() => Keyboard.dismiss()}>
+            <Actionsheet.Content bg={'white'}>
+                <Box mt={'-4px'}>
+                    <Actionsheet.Header pt={'4px'} pb={3} borderBottomWidth={1} borderColor={Colors.light.smoke}
+                                        width={width}>
+                        <Text textAlign={'center'} fontWeight={600} fontSize={16}
+                              lineHeight={20}>Tuỳ chọn</Text>
+                    </Actionsheet.Header>
+                    <Modal.CloseButton top={0}/>
+                </Box>
+                <Animated.View style={{
+                    width: width,
+                    marginBottom: Platform.OS === 'ios' ? refAni : 0,
+                    paddingTop: 10
+                }}>
+                    <Input
+                        mx={'16px'}
+                        p={'12px'}
+                        rounded={12}
+                        fontSize={14}
+                        value={textSearch}
+                        borderWidth={0}
+                        onChangeText={(text) => handleChangeSearch(text)}
+                        bg={'gray'}
+                        placeholder={"Tìm kiếm"}
+                    />
+                    <Box style={styles.containerView} mt={'16px'}>
+                        <ScrollView style={styles.list}>
+                            {searchData && searchData?.map(item => renderItem(item))}
+                        </ScrollView>
+                    </Box>
+                </Animated.View>
+            </Actionsheet.Content>
+        </Pressable>
     }
 
     return (
-        <Modal isOpen={isVisible} onClose={() => setVisible(false)}>
-            <Modal.Content maxWidth="400px">
-               <Modal.Body>
-                       <Input
-                           rounded={12}
-                           value={textSearch}
-                           borderWidth={1}
-                           onChangeText={(text) => handleChangeSearch(text)}
-                           onFocus={() => {
-                               setIsFocused(true)
-                           }}
-                           onBlur={() => {
-                               setIsFocused(false)
-                           }}
-                           bg={'blue'}
-                           flex={1}
-                           placeholder={"Tìm kiếm"}
-                           // suffix={
-                           //     isFocused ? <TouchableOpacity style={{alignItems: 'center', textAlign: 'center'}}
-                           //                                   onPress={() => handleChangeSearch('')}>
-                           //             <Icon fontSize={16} name={'close-circle'} color={'grey'} fontFamily={'Ionicons'}/>
-                           //         </TouchableOpacity>
-                           //         : <></>}
-                       />
-                   <Box style={styles.containerView} mt={'16px'}>
-                       <ScrollView style={styles.list}>
-                           {searchData?.map(item=>renderItem(item))}
-                       </ScrollView>
-                   </Box>
-               </Modal.Body>
-            </Modal.Content>
-        </Modal>
+        <Actionsheet isOpen={isVisible} onClose={() => setVisible(false)}>
+            {renderContent()}
+        </Actionsheet>
     )
 }
 
 
 const {width, height} = Dimensions.get('window')
 const styles = StyleSheet.create({
-    container: {
-        flex: 0,
-        width: '100%',
-        marginTop: (Platform.OS === 'ios') ? 20 : 0,
-        margin: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        maxHeight: height / 2,
-    },
     containerView: {
         backgroundColor: 'white',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        // shadowOpacity: 0.29,
-        // shadowRadius: 4.65,
-        // borderTopLeftRadius: 10,
-        // borderTopRightRadius: 10,
-        paddingBottom: 20,
     },
     list: {
         flexGrow: 1,
         // borderTopLeftRadius: 10,
         // borderTopRightRadius: 10,
         // justifyContent: 'flex-start',
-        maxHeight: height / 2,
+        maxHeight: height / 3.5,
         minHeight: 150,
     },
     touches: {

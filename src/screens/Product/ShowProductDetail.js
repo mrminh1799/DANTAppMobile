@@ -9,6 +9,9 @@ import _ from "lodash";
 import {addCart, addToCart} from "@/services/Cart";
 import {useDispatch} from "react-redux";
 import {useAuth} from "@/contexts";
+import ToastMessageService from "@/components/ToastAlert/ToastMessageService";
+import ToastMessage from "@/components/ToastAlert/ToastMessage";
+import {navigate} from "@/navigators/utils";
 
 const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
 
@@ -26,9 +29,9 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
 
     const sumQuantity = product?.listDetailProduct?.length <= 1 ? product?.listDetailProduct?.[0].quantity : product?.listDetailProduct?.reduce((prev, next) => {
         if (_.isObject(prev)) {
-            return prev?.quantity + next.quantity
+            return Number(prev?.quantity) + Number(next.quantity)
         } else {
-            return prev + next.quantity
+            return Number(prev) + Number(next.quantity)
         }
     })
 
@@ -156,12 +159,29 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
         //     }
         // })
         let currentData = product.listDetailProduct.find(item => (item.color.id === selectColor) && (item.size.id === selectSize))
-
         dispatch(addCart({
             idAccount: userInfo.id,
             idProductDetail: currentData.id,
             quantity: quantity
         }))
+        ToastMessageService._openMessage('Đã thêm vào giỏ hàng')
+    }
+
+    const toCheckout = () =>{
+        setOpenChoose(false)
+        let currentData = product.listDetailProduct.find(item => (item.color.id === selectColor) && (item.size.id === selectSize))
+        currentData.idProduct = currentData.id
+        currentData.price = product.price
+        currentData.colorName = currentData.color.colorName
+        currentData.sizeName = currentData.size.size_name
+        currentData.quantity = quantity
+        currentData.productName = product.name
+        currentData.colorImage = currentData.image
+        navigate('Checkout', {
+            cart: [currentData],
+            total: currentData.price * currentData.quantity,
+            isKeep: true
+        })
     }
 
     return <Actionsheet isOpen={openChoose} onClose={() => setOpenChoose(false)}>
@@ -309,6 +329,7 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
                             }}
                         </Pressable>
                         <Pressable flex={1}
+                                   onPress={toCheckout}
                                    isDisabled={!selectSize || !selectColor}
                                    _disabled={{
                                        opacity: 0.5
@@ -322,13 +343,13 @@ const ShowProductDetail = ({product, listImage, openChoose, setOpenChoose}) => {
                                     backgroundColor: Colors.light.danger,
                                     marginRight: 10,
                                     marginLeft: 5
-                                }}
-                                            onPress={() => setOpenChoose(true)}>
+                                }}>
                                     <Text textAlign={'center'} color={'white'}>Mua ngay</Text>
                                 </Box>
                             }}
                         </Pressable>
                     </Box>
+                    <ToastMessage/>
                 </Pressable>
             </Actionsheet.Content>
         </KeyboardAvoidingView>

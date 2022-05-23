@@ -43,8 +43,12 @@ const Login = () => {
 
     const handleLoginWithPhone = () => {
         dispatch(useLogin(inputValue, (res) => {
-            Storage.save('userData', res)
-            setUserInfo(res)
+            if(res?.isActive){
+                Storage.save('userData', res)
+                setUserInfo(res)
+            }else{
+                DialogBoxService.alert('Tài khoản của bạn đã bị khoá')
+            }
         },(err)=>{
             if(err.statusCode === '401'){
                 DialogBoxService.alert('Tài khoản hoặc mật khẩu không chính xác')

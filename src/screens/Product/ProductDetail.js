@@ -10,6 +10,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import {Colors} from "@/styles/Colors";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import ShowProductDetail from "@/screens/Product/ShowProductDetail";
+import {RenderHTML} from "react-native-render-html";
 
 const Name = 'ProductDetail';
 
@@ -138,18 +139,24 @@ const ProductDetail = ({route}) => {
                     <Box px={'14px'} borderBottomWidth={1} borderBottomColor={Colors.light.lightShade}>
                         <Text pb={3} fontWeight={600}>Chi tiết sản phẩm</Text>
                     </Box>
-                    <Text mx={'14px'} mt={3} fontWeight={300}>
-                        {product.description}
-                    </Text>
+                    <Box mx={'14px'} mt={2}>
+                        <RenderHTML
+                            contentWidth={'100%'}
+                            enableExperimentalMarginCollapsing={true}
+                            enableExperimentalBRCollapsing={true}
+                            enableExperimentalGhostLinesPrevention={true}
+                            source={{html: product.description}}
+                        />
+                    </Box>
                 </Box>
             </ScrollView>
             <ShowProductDetail product={product} listImage={listImage} openChoose={openChoose}
                                setOpenChoose={setOpenChoose}/>
             <Box flexDir={'row'}>
-                <TouchableOpacity style={{flex: 1, paddingVertical: 13, backgroundColor: '#01BFA5'}}>
+                <TouchableOpacity onPress={() => setOpenChoose(true)} style={{flex: 1, paddingVertical: 13, backgroundColor: '#01BFA5'}}>
                     <Text textAlign={'center'} color={'white'}>Thêm vào giỏ hàng</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{flex: 1, paddingVertical: 13, backgroundColor: Colors.light.danger}}>
+                <TouchableOpacity onPress={() => setOpenChoose(true)} style={{flex: 1, paddingVertical: 13, backgroundColor: Colors.light.danger}}>
                     <Text textAlign={'center'} color={'white'}>Mua ngay</Text>
                 </TouchableOpacity>
             </Box>

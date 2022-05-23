@@ -1,4 +1,5 @@
-import {createGet, createPost} from "@/services/utils";
+import {createDelete, createGet, createPost} from "@/services/utils";
+import axiosHelper from "@/utils/axiosHelper";
 
 
 export const useCart = (params, _callback) => async dispatch => {
@@ -12,4 +13,14 @@ export const addCart = (params, _callback) => async dispatch => {
 }
 export const updateCart = (params, _callback) => async dispatch => {
     await createGet(dispatch, 'updateCart', 'cart/updateQuantity/' + params.idAccount + "/" + params.idProductDetail + '/' + params.quantity, params, _callback);
+}
+export const deleteCart = (params, _callback) => async dispatch => {
+    await createDelete(dispatch, 'deleteCart', 'cart/deleteByidProduct/' + params.idAccount + "/" + params.idProductDetail, params, _callback);
+}
+export const deleteAllCart = (params, _callback) => async dispatch => {
+    await createDelete(dispatch, 'deleteAllCart', 'cart/deleteAllByIdAccount/' + params.idAccount, params, _callback);
+}
+//lay tinh thanh phố
+export const findCity = () => {
+    return axiosHelper.get("https://provinces.open-api.vn/api/?depth=3");
 }

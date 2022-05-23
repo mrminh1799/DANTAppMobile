@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react'
-import {registerScreen} from "@/navigators/utils";
+import React, {useEffect, useState} from 'react'
+import {navigate, registerScreen} from "@/navigators/utils";
 import {Box, Icon, Input, Pressable, Text} from "native-base";
-import {Header} from "@/components";
+import {DialogBoxService, Header} from "@/components";
 import {Colors} from "@/styles/Colors";
 import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated";
 import {StyleSheet, TouchableOpacity, useWindowDimensions} from "react-native";
@@ -9,7 +9,7 @@ import {SwipeListView} from "react-native-swipe-list-view";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {useAuth} from "@/contexts";
 import {useDispatch, useSelector} from "react-redux";
-import {useCart} from "@/services/Cart";
+import {deleteCart, updateCart, useCart} from "@/services/Cart";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import _ from "lodash";
 
@@ -31,6 +31,9 @@ const Cart = () => {
 
     const listCart = useSelector(state => state.globalReducer.cart)
 
+    const [cart, setCart] = useState([])
+
+    console.log('cart',cart)
     useEffect(() => {
         if (userInfo) {
             dispatch(useCart({
@@ -39,47 +42,57 @@ const Cart = () => {
         }
     }, [userInfo])
 
-    const test = [
-        {
-            cate: 'fdsfgdsgjsfg dfghjdfo  drhdọ johd ohjo',
-            price: '123',
-            quantity: '3123123'
-        },
-        {
-            cate: 'fdsfgdsgjsfg dfghjdfo  drhdọ johd ohjo',
-            price: '123',
-            quantity: '3123123'
-        },
-        {
-            cate: 'fdsfgdsgjsfg dfghjdfo  drhdọ johd ohjo',
-            price: '123',
-            quantity: '3123123'
-        },
-        {
-            cate: 'fdsfgdsgjsfg dfghjdfo  drhdọ johd ohjo',
-            price: '123',
-            quantity: '3123123'
-        },
-        {
-            cate: 'fdsfgdsgjsfg dfghjdfo  drhdọ johd ohjo',
-            price: '123',
-            quantity: '3123123'
-        },
-    ]
+    useEffect(() => {
+        if (listCart) {
+            setCart(listCart)
+        }
+    }, [listCart])
 
-    const total = listCart?.length <= 1 ? listCart?.[0]?.quantity * listCart?.[0]?.price : listCart?.reduce((prev, next)=>{
-        if(_.isObject(prev)){
+    const total = cart?.length <= 1 ? cart?.[0]?.quantity * cart?.[0]?.price : cart?.reduce((prev, next) => {
+        if (_.isObject(prev)) {
             return prev.quantity * prev.price + next.quantity * next.price
-        }else{
+        } else {
             return prev + next.quantity * next.price
         }
     })
 
-    const renderHidden = ({item}) => <TouchableOpacity
-        style={[styles.backRightBtn, styles.backRightBtnRight]}>
+    const deleteItem = (item) => {
+        dispatch(deleteCart({
+            idAccount: userInfo.id,
+            idProductDetail: item.idProduct
+        }))
+        setCart(cart.filter(value => item.idProduct !== value.idProduct))
+    }
+
+    const renderHidden = ({item}) => <TouchableOpacity onPress={() => deleteItem(item)}
+                                                       style={[styles.backRightBtn, styles.backRightBtnRight]}>
         <Icon size={5} as={<FontAwesome5 name={'trash'}/>} color={'redBase'}/>
         <Text mt={7.7} style={styles.backTextWhite}>Xóa</Text>
     </TouchableOpacity>
+
+    const changeQuantity = (type, item) => {
+        setCart(cart.map(value => {
+            if (item.idProduct === value.idProduct) {
+                if (type === 'minus' && value.quantity > 1) {
+                    value.quantity--
+                    dispatch(updateCart({
+                        idAccount: userInfo.id,
+                        idProductDetail: value.idProduct,
+                        quantity: value.quantity
+                    }))
+                }
+                if (type === 'plus') {
+                    value.quantity++
+                    dispatch(updateCart({
+                        idAccount: userInfo.id,
+                        idProductDetail: value.idProduct,
+                        quantity: value.quantity
+                    }))
+                }
+            }
+            return value
+        }))
+    }
 
     const renderItem = ({item, index}) => {
         return <Box mb={3} bg={"white"} py={4} w={width} flexDir={'row'} px={'15px'}>
@@ -93,7 +106,7 @@ const Cart = () => {
                         thumb={item?.colorImage}/>
                 </Box>
             </Box>
-            <Box pl={'10px'} flexGrow={1}>
+            <Box pl={'10px'} flexGrow={1} flexShrink={1}>
                 <Text fontWeight={700} fontSize={16}>{item?.productName.trim()}</Text>
                 <Text mt={1}>Phân loại: {item.colorName} - {item.sizeName}</Text>
                 <Box flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
@@ -102,7 +115,7 @@ const Cart = () => {
                         textDecorationLine={'underline'}>đ</Text></Text>
                     <Box pt={'15px'} pb={'5px'} justifyContent={'space-between'} flexDir={'row'}>
                         <Box flexDir={'row'} alignItems={'center'}>
-                            <Pressable>
+                            <Pressable onPress={() => changeQuantity('minus', item)}>
                                 {({
                                       isPressed
                                   }) => {
@@ -120,7 +133,7 @@ const Cart = () => {
                                 value={item?.quantity.toString()} keyboardType="numeric" textAlign={'center'}
                                 borderRadius={0} py={'5px'}
                                 px={'25px'}/>
-                            <Pressable>
+                            <Pressable onPress={() => changeQuantity('plus', item)}>
                                 {({
                                       isPressed
                                   }) => {
@@ -144,27 +157,34 @@ const Cart = () => {
         <Box flex={1} bg={'#eeeeee'}>
             <Header title={'Giỏ hàng'} isBack={true}/>
             <Box w={width} flex={1}>
-                {
-                    listCart?.length > 0 &&
-                    <SwipeListView
-                        data={listCart}
-                        rightOpenValue={-75}
-                        renderItem={renderItem}
-                        renderHiddenItem={renderHidden}
-                    />
-                }
+                <SwipeListView
+                    data={cart}
+                    rightOpenValue={-75}
+                    renderItem={renderItem}
+                    renderHiddenItem={renderHidden}
+                />
                 <Box shadow={5} bg={'white'} px={'20px'} pt={'15px'} pb={insets.bottom}>
                     <Box flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
                         <Text fontWeight={700} fontSize={16}>
                             Tổng thanh toán:
                         </Text>
-                        <Text fontWeight={700} fontSize={16} mt={2} color={Colors.light.danger}>{!!total ? total : 0}<Text
+                        <Text fontWeight={700} fontSize={16} mt={2}
+                              color={Colors.light.danger}>{!!total ? total : 0}<Text
                             fontSize={15}
                             textDecorationLine={'underline'}>đ</Text></Text>
                     </Box>
-                    <TouchableOpacity style={{
+                    <TouchableOpacity onPress={()=>{
+                        if(_.isEmpty(cart)){
+                            DialogBoxService.alert('Không có sản phẩm nào trong giỏ hàng')
+                            return
+                        }
+                        navigate('Checkout', {
+                            cart: cart,
+                            total: total
+                        })
+                    }} style={{
                         backgroundColor: Colors.light.redBase,
-                        borderRadius: 18,
+                        borderRadius: 10,
                         paddingVertical: 12,
                         marginTop: 16
                     }} activeOpacity={0.6}>
@@ -194,7 +214,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         width: 75,
-        marginBottom: 24
+        marginBottom: 12,
     },
     backRightBtnRight: {
         backgroundColor: '#FEF4F4',

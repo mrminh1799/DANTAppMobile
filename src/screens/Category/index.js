@@ -1,15 +1,17 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {goBack, navigate, registerScreen} from "@/navigators/utils";
-import {Box, Icon, Input, KeyboardAvoidingView, Pressable, ScrollView, Text} from "native-base";
+import {Box, Icon, Input, KeyboardAvoidingView, Pressable, Text} from "native-base";
 import {FlatList, useWindowDimensions} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import Feather from "react-native-vector-icons/Feather";
 import {Colors} from "@/styles/Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useGetDetailProduct, useGetProductCate, useGetProductParent} from "@/services/Product";
-import ImageBlurShadow from "@/components/ImageBlurShadow";
 import {loadAnimated} from "@/utils/Other";
+import FormatText from "../../components/FormatText";
+import _ from "lodash";
+import FastImageAnimated from "@/components/FastImageAnimated/FastImageAnimated";
 
 
 const Name = "Category"
@@ -17,6 +19,7 @@ const Name = "Category"
 const ScreenOptions = {
     headerShown: false,
 };
+const DEFAULT_IMAGE = 'https://mcdn.nhanh.vn/store/2071/ps/20220416/TP200.jpg'
 const Category = ({route}) => {
 
     const {params} = route
@@ -27,12 +30,18 @@ const Category = ({route}) => {
 
     const dispatch = useDispatch()
 
+    const [search, setSearch] = useState('')
+
     const [curCate, setCurCate] = useState({})
 
     const [lstProduct, setLstProduct] = useState([])
 
-    useEffect(()=>{
-        if(params?.lstChild && params?.idParent){
+    const productParent = useSelector(state => state.globalReducer.product_by_cateParent)
+
+    const productChild = useSelector(state => state.globalReducer.product_by_cate)
+
+    useEffect(() => {
+        if (params?.lstChild && params?.idParent) {
             loadAnimated()
             setCurCate({
                 "idCategory": params?.idParent,
@@ -40,31 +49,39 @@ const Category = ({route}) => {
                 "isParent": true
             })
         }
-    },[params?.lstChild, params?.idParent])
+    }, [params?.lstChild, params?.idParent])
 
-    useEffect(()=>{
-        if(curCate && curCate?.idCategory){
-            if(curCate?.isParent){
+    useEffect(() => {
+        if (curCate && curCate?.idCategory) {
+            if (curCate?.isParent) {
                 dispatch(useGetProductParent({
                     id: curCate?.idCategory
-                },(res)=>{
-                    if(res){
+                }, (res) => {
+                    if (res) {
                         loadAnimated()
                         setLstProduct(res)
                     }
                 }))
-            }else{
+            } else {
                 dispatch(useGetProductCate({
                     id: curCate?.idCategory
-                },(res)=>{
-                    if(res){
+                }, (res) => {
+                    if (res) {
                         loadAnimated()
                         setLstProduct(res)
                     }
                 }))
             }
         }
-    },[curCate])
+    }, [curCate])
+
+    const handleSearch = (text) => {
+        if (curCate?.isParent) {
+            setLstProduct(productParent.filter(item => FormatText(item.name).includes(FormatText(text))))
+        } else {
+            setLstProduct(productChild.filter(item => FormatText(item.name).includes(FormatText(text))))
+        }
+    }
 
     const renderCateChild = ({item, index}) => {
         const check = item.idCategory == curCate.idCategory
@@ -77,9 +94,10 @@ const Category = ({route}) => {
                 backgroundColor: 'white',
                 borderColor: Colors.light.smoke,
             }
-        return (<Pressable onPress={()=>{
+        return (<Pressable onPress={() => {
             loadAnimated()
             setCurCate(item)
+            setSearch('')
         }} ml={index === 0 ? '25px' : 0} p={'13px'} py={'11px'} borderWidth={1} mr={3} rounded={8} style={[style]}>
             <Text fontWeight={600} color={check ? 'white' : 'black'}>{item?.nameCategory}</Text>
         </Pressable>)
@@ -102,20 +120,30 @@ const Category = ({route}) => {
             })
         }
 
-        return(<Pressable mb={'20px'} w={(width - 70)/2} onPress={toDetailProduct} ml={index % 2 !== 0 ? '20px' : 0}>
-            <ImageBlurShadow
-                source={{uri: 'https://mcdn.nhanh.vn/store/2071/ps/20220416/TP200.jpg'}}
-                imageWidth={(width - 70)/2}
-                imageHeight={((width - 70)/2)/275 * 413}
-                imageBorderRadius={10}
-                shadowNewOffset={30}
-                shadowBlurRadius={20}
-                shadowBackgroundColor={'#ffffff'}
+        return (<Pressable style={{
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 7,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 9.11,
+
+            elevation: 14,
+        }} bg={'white'} rounded={8} mb={'20px'} pb={'5px'} w={(width - 70) / 2} onPress={toDetailProduct} ml={index % 2 !== 0 ? '20px' : 0}>
+            <FastImageAnimated
+                thumb={item?.image ? item.image : DEFAULT_IMAGE}
+                style={{
+                    width: (width - 70) / 2,
+                    height: ((width - 70) / 2) / 275 * 413
+                }}
+                width={(width - 70) / 2}
+                height={((width - 70) / 2) / 275 * 413}
             />
-            <Text mt={'-16px'} fontWeight={700} noOfLines={1}>
+            <Text px={'10px'} pt={'10px'} fontWeight={700} noOfLines={1}>
                 {item?.name}
             </Text>
-            <Text color={Colors.light.redBase} fontWeight={600}>
+            <Text px={'10px'} color={Colors.light.redBase} fontWeight={600}>
                 {item?.price}đ
             </Text>
         </Pressable>)
@@ -128,13 +156,18 @@ const Category = ({route}) => {
             </Pressable>
             <Box flex={1} ml={'10px'}>
                 <Input
+                    onChangeText={text => {
+                        setSearch(text)
+                        handleSearch(text)
+                    }}
+                    value={search}
                     leftElement={<Icon as={<Feather name={'search'}/>} ml={'10px'} size={6}
                                        color={Colors.light.mediumContrast}/>}
                     fontSize={14} bg={'#f1f0f0'} borderWidth={0} px={'10px'}
                     placeholder={'Tìm sản phẩm'} py={'12px'}/>
             </Box>
         </Box>
-    },[])
+    }, [search])
 
     const renderLstCate = useMemo(() => {
 
@@ -148,14 +181,23 @@ const Category = ({route}) => {
                 ...params?.lstChild
             ]} renderItem={(value) => renderCateChild(value)}/>
         </Box>
-    },[params?.lstChild, params?.idParent, curCate])
+    }, [params?.lstChild, params?.idParent, curCate])
 
     const renderLstProduct = useMemo(() => {
-
-        return <FlatList style={{
-            marginHorizontal: 25
-        }} data={lstProduct} numColumns={2} renderItem={(value) => <RenderProduct {...value}/>}/>
-    },[lstProduct])
+        return _.isEmpty(lstProduct) ?
+            <Box justifyContent={'center'} alignItems={'center'}>
+                <Text>Không có sản phẩm nào!</Text>
+            </Box>
+            :
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={{
+                    paddingHorizontal: 25,
+                    backgroundColor: '#eee',
+                    paddingTop: 15,
+                    marginBottom: insets.bottom
+                }} data={lstProduct} numColumns={2} renderItem={(value) => <RenderProduct {...value}/>}/>
+    }, [lstProduct])
 
     return (
         <KeyboardAvoidingView flex={1} bg={'white'} pt={insets.top}>

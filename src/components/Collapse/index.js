@@ -31,14 +31,14 @@ const Collapse = ({
                 <Box
                     px={'17px'} py={'13px'}
                     rounded={4}
-                    borderColor={border}
-                    borderWidth={2}
-                    bg={labelBackground}
+                    // borderColor={border}
+                    // borderWidth={2}
+                    // bg={labelBackground}
                     flexDir={'row'}
                     alignItems={'center'}
                     justifyContent={'space-between'}
                 style={collapseStyle}>
-                    <Text fontSize={14} fontWeight={700} color={labelColor} style={labelStyle}>
+                    <Text fontSize={14} fontWeight={700} style={labelStyle}>
                         {label}
                     </Text>
                     <Icon as={isActive ? <AntDesign name="down"/> : <AntDesign name="up"/>} size={'6'}
